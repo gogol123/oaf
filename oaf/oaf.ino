@@ -11,6 +11,8 @@
 #include <utility/w5100.h>
 
 
+#define VERSION 0.9.0
+
 void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *, bool);
 void JsonGetCapteur(WebServer &server, WebServer::ConnectionType type, char *, bool);
 void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tail, bool);
