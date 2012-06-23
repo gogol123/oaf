@@ -308,6 +308,8 @@ void loop()
   
   if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
     GetMeteoSensor();
+    if (IsClosedNeeded)
+      Serial << "Femeture du toit sur condition meteo \n";
     starTimerMeteo=millis();
   }
 

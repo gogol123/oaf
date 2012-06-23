@@ -75,6 +75,7 @@ void GetMeteoSensor(){
   }
   
   Darkness = 19 - (2.5*log10(1000000.0/Darkness));
+  Clarity =  AmbTemp-SkyTemp;
 //#if DEBUG > 2 
 
   Serial.print("Time elapse :");
@@ -93,6 +94,24 @@ void GetMeteoSensor(){
 }
 
 }
+
+boolean IsClosedNeeded(void){
+  if (FermetureAuto) {
+      if (meteoValues.DarknessCheck && (Darkness < meteoValues.DarknessTheshold))
+          return true;
+      if (meteoValues.SkyTempCheck && (SkyTemp > meteoValues.SkyTempThreShold))
+         return true;
+      if (meteoValues.ClarityCheck && (Clarity > meteoValues.ClarityThreshold))
+         return true;
+      if (meteoValues.RainCheck && (Rain > meteoValues.RainThreshold))
+         return true;
+      if (meteoValues.HumidityCheck && (Humidity > meteoValues.HumidityThresold))
+         return true;
+  }
+}
+
+         
+          
 
 
 void decodeLine(String line,String ref,float *value) {
