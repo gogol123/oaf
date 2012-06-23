@@ -312,6 +312,7 @@ void loop()
       NbCheckBeforeClose ++;
     if (NbCheckBeforeClose ==  2){
       Serial << "Femeture du toit sur condition meteo \n";
+      UserAction=ActionFermeture;
       LogOnInternet(1,"Femeture_du_toit_sur_condition_meteo","system");
       NbCheckBeforeClose = 0;
     }
