@@ -1,0 +1,173 @@
+
+#include <Wire.h>
+ 
+#define MMA7660addr   0x4c
+#define MMA7660_X     0x00
+#define MMA7660_Y     0x01
+#define MMA7660_Z     0x02
+#define MMA7660_TILT  0x03
+#define MMA7660_SRST  0x04
+#define MMA7660_SPCNT 0x05
+#define MMA7660_INTSU 0x06
+#define MMA7660_MODE  0x07
+#define MMA7660_SR    0x08
+#define MMA7660_PDET  0x09
+#define MMA7660_PD    0x0A
+ 
+class Acceleration
+{
+ public:
+ char x;
+ char y;
+ char z;
+};
+
+
+void mma7660_init(void)
+{
+  Wire.begin();
+  Wire.beginTransmission( MMA7660addr);
+  Wire.write(MMA7660_MODE);   
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+ 
+  Wire.beginTransmission( MMA7660addr);
+  Wire.write(MMA7660_SR);   
+  Wire.write(byte(0x07));  //   Samples/Second Active and Auto-Sleep Mode
+  Wire.endTransmission();
+ 
+  Wire.beginTransmission( MMA7660addr);
+  Wire.write(MMA7660_MODE);   
+  Wire.write(0x01);//active mode
+  Wire.endTransmission();
+}
+ 
+boolean checkTelescopePosition(void){
+
+  unsigned char val[3];
+  int count = 0;
+  val[0] = val[1] = val[2] = 64;
+  Wire.requestFrom(0x4c, 3);    // request 3 bytes from slave device 0x4c
+ 
+  while(Wire.available())  
+  {
+    if(count < 3)
+      while ( val[count] > 63 )  // reload the damn thing it is bad
+        {
+          val[count] = Wire.read();
+ 
+        }
+        count++;
+  }
+ 
+  // transform the 7 bit signed number into an 8 bit signed number.
+  Acceleration ret;
+ 
+  ret.x = ((char)(val[0]<<2))/4;
+  ret.y = ((char)(val[1]<<2))/4;
+  ret.z = ((char)(val[2]<<2))/4;
+      Serial.print("x = ");
+    Serial.println(ret.x,DEC);   // print the reading
+ 
+        Serial.print("y = ");
+    Serial.println(ret.y,DEC);   // print the reading
+ 
+        Serial.print("z = ");
+    Serial.println(ret.z,DEC);   // print the reading
+}
+
+
+boolean  IsTelescopeParked(){
+  //get  
+    long timer ;
+    timer = millis();
+    if (client_OAFServer.connect(OAFServer,8080)) {
+      // Make a HTTP request:
+      SendUrl("/ntm/getAlt");
+      String  resp = getAnswer();
+      Serial << "AtPark:" << resp << "\n";
+      char myChar[resp.length()+1];
+      resp.toCharArray(myChar,resp.length()+1);    
+         Serial << " Time getAlt : "<< millis()-timer << "\n";
+ 
+      if ( atoi(myChar) < 2 ) // si altidute deu telescope < 2° il est parker
+        return true;
+      else 
+        return false;
+      
+    }
+
+}
+
+
+void Park(void){
+  if (client_OAFServer.connect(OAFServer,8080)) {
+      // Make a HTTP request:
+      Serial << "Park \n";
+      SendUrl("/ntm/park");
+//      String  resp = getAnswer();
+//      Serial << "Park:" << resp << "\n";  
+        client_OAFServer.stop();
+        client_OAFServer.flush();
+    }
+    Serial << "Park done\n";
+
+}
+
+void UnPark(void){
+  if (client_OAFServer.connect(OAFServer,8080)) {
+      // Make a HTTP request:
+      SendUrl("/ntm/unpark");
+//      String  resp = getAnswer();
+//      Serial << "UnPark:" << resp << "\n";  
+        client_OAFServer.stop();
+        client_OAFServer.flush();
+    }
+
+}
+void SendUrl(char *url) {
+      client_OAFServer.print("GET ");
+      client_OAFServer.print(url);
+      client_OAFServer.println(" HTTP/1.1");
+      client_OAFServer.println();
+}
+
+
+char inString[31]; // string for incoming serial data
+int stringPos = 0; // string index counter
+boolean startRead = false; // is reading?
+
+String getAnswer(){
+  //read the page, and capture & return everything between '{' and '}'
+
+  stringPos = 0;
+  memset( &inString, 0, 30 ); //clear inString memory
+
+  while(true){
+
+    if (client_OAFServer.available()) {
+     char c = client_OAFServer.read();
+
+     if (c == '{' ) { 
+      startRead = true; 
+      }
+      else if(startRead){
+
+        if(c != '}'){ 
+          inString[stringPos] = c;
+          stringPos ++;
+        }
+        else{
+          //got what we need here! We can disconnect now
+          startRead = false;
+          client_OAFServer.stop();
+          client_OAFServer.flush();
+          return inString;
+
+        }
+
+      }
+   }
+
+  }
+}

@@ -1,0 +1,164 @@
+    <!DOCTYPE html>
+<html><head>
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js'></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js'></script>
+  <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css' />
+  <style type='text/css'>
+  	#schema {width:340px;height:200px;background-color:#BDBDBD; }
+  	#moteur {width:340px;height:50px;background-color:#BDBDBD; }
+  	.capteur, .etatMoteur { width:30px;height:30px;opacity:0.6;background-color:#6E6E6E; }
+	.textClass { width:60px;height:30px;font-size:150%; }
+	#statusLabel { width:160px; font-weight:bold}
+  </style>
+  <script>
+       var statusTable = ['Toit fermé ','Tympan Ouverture intermedaire','Tympan ouverture totale','',
+                           'Tympan fermeture','Toit fermeture','Toit ouverture','Toit ouvert','Arret Urgence',
+                            'Tympan fermeture','Park Téléscope'];
+	function updateSchema(){
+	    $.getJSON('/json/capteur',function(data){
+	            $('#Telescope').css('background-color',((data.Telescope==0)?'red':'green'));
+	            $('#ToitFerme').css('background-color',((data.ToitFerme==1)?'green':'#6E6E6E'));
+	            $('#ToitOuvert').css('background-color',((data.ToitOuvert==1)?'green':'#6E6E6E'));
+	            $('#TympanOuvert').css('background-color',((data.TympanOuvert==1)?'green':'#6E6E6E'));
+	            $('#TympanFerme').css('background-color',((data.TympanFerme==1)?'green':'#6E6E6E'));
+	            $('#TympanInter').css('background-color',((data.TympanIntermediaire==1)?'green':'#6E6E6E'));
+	            $('#OuvertureTympan').css('background-color',((data.OuvertureTympan==1)?'red':'#6E6E6E'));
+	            $('#FermetureTympan').css('background-color',((data.FermetureTympan==1)?'red':'#6E6E6E'));
+	            $('#OuvertureToit').css('background-color',((data.OuvertureToit==1)?'red':'#6E6E6E'));
+	            $('#FermetureToit').css('background-color',((data.FermetureToit==1)?'red':'#6E6E6E'));
+                   $('#statusLabel').text(statusTable[data.CurrentState]);
+                   $('#poweroff').button(data.Telescope==1?'enable':'disable');
+                   $('#ConnectTpl2').attr('checked',data.TelescopeTpl2Connected==1);
+                   if (data.CurrentState==8) 
+                        $('#statusLabel').css('color','red');
+                   else
+                        $('#statusLabel').css('color','black');
+                   if (data.TelescopeTpl2Connected==0) {
+                          $('#fermeture,#ouvertureT,#ouvertureP,#stop').button('disable');
+                  } else {
+                      if ( data.Telescope==0 )
+                           $('#ouvertureT,#ouvertureP').button('disable');
+	                if(data.CurrentState==0) { 
+	            	    $('#fermeture').button('disable');
+	            	    $('#ouvertureT,#ouvertureP').button('enable');
+		        } else if (data.CurrentState==7) { 
+	          	    $('#fermeture').button('enable');
+	            	    $('#ouvertureT,#ouvertureP').button('disable');
+	        	}
+	        	else  
+	          	    $('#fermeture,#ouvertureT,#ouvertureP').button('disable');
+                   if (data.CurrentState==8 || $('#security').is(':checked'))  
+            	        $('#fermeture,#ouvertureT,#ouvertureP').button('enable');
+                 }
+	    });
+	};
+  $(document).ready(function() {
+    $('#tabs').tabs();
+    $('button').button();
+	$( '#lumiere,#PC1,#PC2').buttonset();
+	$('#ToitFerme').position({my:'left top',at:'left top',of:'#schema'});
+	$('#ToitOuvert').position({my:'right top',at:'right top',of:'#schema'});
+	$('#TympanOuvert').position({my:'left bottom',at:'left bottom',of:'#schema'});
+	$('#TympanIntermediaire').position({my:'left top',at:'left top',offset: '0 70',of:'#schema'});
+	$('#TympanFerme').position({my:'left top',at:'left top',offset: '0 35',of:'#schema'});
+	$('#Telescope').position({of:'#schema'});	
+	$('#ToitLabel').position({my:'center top',at:'center top',of:'#schema'});
+	$('#TympanLabel').position({my:'left top',at:'left center',offset :'0 20',of:'#schema'});
+	$('#TelescopeLabel').position({offset:'0 35',of:'#schema'});
+	$('#statusLabel').position({my:'left bottom',at:'left bottom',offset:'150 -20',of:'#schema'});
+	$('#OuvertureTympan').position({my:'left',at :'left ',of :'#moteur'});
+	$('#FermetureTympan').position({my:'left',at :'left ',offset:'60 0',of :'#moteur'});
+	$('#OuvertureToit').position({my:'right',at :'right ',offset:'-60 0',of :'#moteur'});
+	$('#FermetureToit').position({my:'right',at :'right ',of :'#moteur'});
+	$('button,#PC1On,#PC1Off,#PC2On,#PC2Off,#lumiereOff,#lumiereOn,#park,#unpark' ).click(function() {	
+		var id = $(this).attr('id'); 
+		$.post('/', { action: id } );
+	});
+	$('#ConnectTpl2').click(function(){
+               var status = $('#ConnectTpl2').is(':checked');
+		$.get('/connectTelecsope',{tpl2:status});
+	});
+	$('#FermetureAuto').click(function(){
+		if ( $('#FermetureAuto').is(':checked'))
+			$('#tableau').show();
+		else
+			$('#tableau').hide();
+
+	});
+  });
+setInterval('updateSchema();',1000); 
+  </script>
+</head><body style='font-size:62.5%;'>
+<div id='tabs'>
+    <ul>
+        <li><a href='#fragment-2'><span>Toit</span></a></li>
+	 <li><a href='#fragment-0'><span>Telescope</span></a></li>
+	 <li><a href='#fragment-1'><span>Fermeture auto</span></a></li>
+        <li><a href='#fragment-3'><span>Lumiere</span></a></li>
+        <li><a href='#fragment-4'><span>PC</span></a></li>
+    </ul>
+    <div id='fragment-2'>
+    	<div id ='schema'>
+    	    <div class = 'capteur' id= 'ToitFerme'> </div>
+    		<div class = 'capteur' id= 'ToitOuvert'></div> 
+    		<div class = 'capteur' id= 'TympanOuvert'></div>
+    		<div class = 'capteur' id= 'TympanInter'></div>
+    		<div class = 'capteur' id= 'TympanFerme'></div>
+    		<div class = 'capteur' id= 'Telescope'></div>
+    		<div class = 'textClass' id ='ToitLabel'> Toit </div>
+    		<div class = 'textClass' id ='TympanLabel'> Tympan </div>
+    		<div class = 'textClass' id ='TelescopeLabel'> Telescope </div>
+		<div class = 'textClass' id ='statusLabel'> status </div>
+    	</div>
+    	<b>Etat Moteurs</b>
+    	<div id = 'moteur'>
+    		<div class = 'etatMoteur' id ='OuvertureTympan'> O</div>
+    		<div class = 'etatMoteur' id ='FermetureTympan'> F</div>
+    		<div class = 'etatMoteur' id ='OuvertureToit'> O</div>
+    		<div class = 'etatMoteur' id ='FermetureToit'> F</div>
+    	</div>
+		<button id ='ouvertureT'> Ouverture total</button>
+		<button id= 'ouvertureP'> Ouverture partielle</button>
+		<button id='fermeture'> Fermeture</button>
+		<button id='stop'> Stop!</button>
+    </div>
+    <div id='fragment-3'>
+		<div id='lumiere'> 
+		Lumiere 1  <input type='radio' name = 'lumiere' id='lumiereOn'  /><label for='lumiereOn'>Allume</label>
+		<input type='radio' name = 'lumiere' id='lumiereOff' checked='checked' /><label for='lumiereOff'>Eteindre</label>
+		</div>   
+	</div>
+    <div id='fragment-4'>
+		<div  id='PC1'>
+			PC astelco  <input type='radio' name = 'PC1' id='PC1On'  /><label for='PC1On'>Allume</label>
+			<input type='radio'  name = 'PC1' id='PC1Off' checked='checked' /><label for='PC1Off'>Eteindre</label>
+		</div>   
+		<div id='PC2'>
+			PC aquisition  <input type='radio' name = 'PC2'id='PC2On'  /><label for='PC2On'>Allume</label>
+			<input type='radio' name = 'PC2' id='PC2Off' checked='checked' /><label for='PC2Off'>Eteindre</label>
+		</div>   
+        ByPass Security : <input type ='checkbox', id = 'security'>
+	</div>
+	<div id='fragment-0'>
+        <div>
+			Connect TPL2 : <input type ='checkbox' id = 'ConnectTpl2'>
+		 </div>
+		<button id='park'> park </button>
+		<button id='poweroff'> NTM power off </button>
+       </div>
+    <div id='fragment-1'>
+        <div>
+			<input type ='checkbox'  id = 'FermetureAuto' >Fermeture auto			
+			<div id = 'tableau' >&nbsp &nbsp &nbsp &nbsp Si une des conditions est vrai => Park du telescope et fermeture du toit<br><br>
+			<form method='post' action ='/FermetureAuto' ><table id ='tableau'>		
+
+				<tr><td><input type ='checkbox'  name = 'ObscurityCheck' >Obscurite</td><td><</td><td><input name=ObscurityValue size=3 />mag/arcsec2</td></tr>
+				<tr><td><input type ='checkbox'  name = 'ClarityCheck' >Clarity</td><td>></td><td><input name=ClarityValue size=3 />degres</td></tr>
+				<tr><td><input type ='checkbox'  name = 'SkyTempCheck'> SkyTemp</td><td>></td><td><input name=SkyTempValue size=3 />degres</td></tr>
+				<tr><td><input type ='checkbox'  name = 'PluieCheck' ;>Pluie</td><td>></td><td><input name=PluieValue size=3 /></td></tr>
+				<tr><td><input type ='checkbox'  name = 'HumCheck'>Humidite</td><td>></td><td><input name=HumValue size=3 />%</td></tr>
+				<tr colspan=3><td ><button id='valider' type='submit'> Valider </button></td></tr>
+			</table> </form></div>
+	 </div>
+       </div>
+</div></body></html>
