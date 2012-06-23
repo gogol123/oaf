@@ -383,6 +383,9 @@ P(message2)=
 "               var status = $('#FermetureAuto').is(':checked');"
 "		$.get('/connectTelecsope',{FerAuto:status});"
 "              if (status) "
+"			$('#tableau').show();"
+"		else"
+"			$('#tableau').hide();"
 "	});"
 "  });";
 P(message3) = 
@@ -453,6 +456,7 @@ P(message5) =
 "			<input type ='checkbox'  id = 'FermetureAuto' ";
 P(message51)=
 ">Fermeture auto"
+"			<div id = 'tableau' >&nbsp &nbsp &nbsp &nbsp Si une des conditions est vrai => Park du telescope et fermeture du toit<br><br>"
 "			<form method='post' action ='/FermetureAuto' ><table>"
 "				<tr><td><input type ='checkbox'  name = 'ObscurityCheck' ";
 P(message6)=
@@ -480,7 +484,7 @@ P(message14)=
 P(message15)=
 "'/>%</td></tr>"
 "				<tr colspan=3><td ><button id='valider' type='submit'> Valider </button></td></tr>"
-"			</table> </form>"
+"			</table> </form></div>"
 "	 </div>"
 "       </div>"
 "</div></body></html>"
