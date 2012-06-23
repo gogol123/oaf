@@ -187,7 +187,7 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
         meteoValues.SkyTempThreShold = atof(value);
       }
      if (strcasecmp(name,"PluieValue")==0){
-        meteoValues.RainThreshold = atof(value);
+        meteoValues.RainThreshold = atoi(value);
       }
      if (strcasecmp(name,"HumValue")==0){
         meteoValues.HumidityThresold = atof(value);
@@ -328,7 +328,6 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 P(message1)=
 "                   $('#poweroff').button(data.Telescope==1?'enable':'disable');"
 "                   $('#ConnectTpl2').attr('checked',data.TelescopeTpl2Connected==1);"
-"		    $('#tableau').hide();"
 "                   if (data.CurrentState==8) "
 "                        $('#statusLabel').css('color','red');"
 "                   else"
@@ -370,7 +369,11 @@ P(message2)=
 "	$('#OuvertureTympan').position({my:'left',at :'left ',of :'#moteur'});"
 "	$('#FermetureTympan').position({my:'left',at :'left ',offset:'60 0',of :'#moteur'});"
 "	$('#OuvertureToit').position({my:'right',at :'right ',offset:'-60 0',of :'#moteur'});"
-"	$('#FermetureToit').position({my:'right',at :'right ',of :'#moteur'});"
+"	$('#FermetureToit').position({my:'right',at :'right ',of :'#moteur'});"  
+"       if ($('#FermetureAuto').is(':checked'))"
+"         $('#tableau').show();"
+"       else"
+"         $('#tableau').hide();"
 "	$('button,#PC1On,#PC1Off,#PC2On,#PC2Off,#lumiereOff,#lumiereOn,#park,#unpark' ).click(function() {	"
 "		var id = $(this).attr('id'); "
 "		$.post('/', { action: id } );"

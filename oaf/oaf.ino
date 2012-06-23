@@ -111,7 +111,7 @@ byte CurrentState = StateArretUrgence;
 
 boolean TelescopeTpl2Connected = true;
 boolean FermetureAuto = false;
-
+boolean NbCheckBeforeClose = 0;
 byte UserAction = NoAction;
 
 
@@ -308,8 +308,14 @@ void loop()
   
   if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
     GetMeteoSensor();
-    if (IsClosedNeeded)
+    if (IsClosedNeeded())
+      NbCheckBeforeClose ++;
+    if (NbCheckBeforeClose ==  2){
       Serial << "Femeture du toit sur condition meteo \n";
+      LogOnInternet(1,"Femeture_du_toit_sur_condition_meteo","system");
+      NbCheckBeforeClose = 0;
+    }
+      
     starTimerMeteo=millis();
   }
 

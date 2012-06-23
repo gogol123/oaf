@@ -30,7 +30,7 @@ struct meteoConfig {
   20.0,
   2100,
   90,
-  true,false,false,false,false
+  false,false,false,false,true
 };
 
 long timerMeteo;
@@ -69,21 +69,21 @@ void GetMeteoSensor(){
       decodeLine(line,"SkyTemp",&SkyTemp);
       decodeLine(line,"DHTTemp",&AmbTemp);
       decodeLine(line,"Darkness",&Darkness);
-      decodeLine(line,"Rain",&Rain);
+//      decodeLine(line,"Rain",&Rain);
       decodeLine(line,"DHTHum",&Humidity);
     }
   }
   
   Darkness = 19 - (2.5*log10(1000000.0/Darkness));
   Clarity =  AmbTemp-SkyTemp;
-//#if DEBUG > 2 
+#if DEBUG > 2 
 
   Serial.print("Time elapse :");
   Serial.println(millis()-timerMeteo);
 
   Serial << "SkyTemp : " << SkyTemp << " DHTTemp :" << AmbTemp << " Darkness :" << Darkness << "\n";
   Serial << "Rain : " << Rain << " DHTHum : " <<Humidity  << "\n";
-//#endif
+#endif
 
   // if the server's disconnected, stop the client:
   if (!client_Meteo.connected()) {
@@ -97,16 +97,26 @@ void GetMeteoSensor(){
 
 boolean IsClosedNeeded(void){
   if (FermetureAuto) {
-      if (meteoValues.DarknessCheck && (Darkness < meteoValues.DarknessTheshold))
+      if (meteoValues.DarknessCheck && (Darkness < meteoValues.DarknessTheshold)){
+          Serial << " Fermeture Auto - Darness :  " <<Darkness  << "< " << meteoValues.DarknessTheshold <<"\n";
           return true;
-      if (meteoValues.SkyTempCheck && (SkyTemp > meteoValues.SkyTempThreShold))
+      }
+      if (meteoValues.SkyTempCheck && (SkyTemp > meteoValues.SkyTempThreShold)){
+          Serial << " Fermeture Auto - SkyTemp :  " <<SkyTemp  << "> " << meteoValues.SkyTempThreShold <<"\n";
          return true;
-      if (meteoValues.ClarityCheck && (Clarity > meteoValues.ClarityThreshold))
+      }
+      if (meteoValues.ClarityCheck && (Clarity > meteoValues.ClarityThreshold)){
+          Serial << " Fermeture Auto - Clarit : " << Clarity  << "> " << meteoValues.ClarityThreshold <<"\n";
          return true;
-      if (meteoValues.RainCheck && (Rain > meteoValues.RainThreshold))
+      }
+      if (meteoValues.RainCheck && (Rain > meteoValues.RainThreshold)){
+          Serial << " Fermeture Auto - Rain :  "  <<Rain  << "> " << meteoValues.RainThreshold <<"\n";
          return true;
-      if (meteoValues.HumidityCheck && (Humidity > meteoValues.HumidityThresold))
+      }
+      if (meteoValues.HumidityCheck && (Humidity > meteoValues.HumidityThresold)){
+         Serial << " Fermeture Auto - Humidity :  "  <<Humidity  << "> " << meteoValues.HumidityThresold <<"\n";
          return true;
+      }
   }
 }
 
