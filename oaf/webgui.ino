@@ -145,59 +145,58 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
       Serial.println(value);
       if (strcasecmp(name,"ObscurityCheck")==0){
         if(strcasecmp(value,"on")==0) 
-          DarknessCheck=true;
+          meteoValues.DarknessCheck=true;
         else
-          DarknessCheck=false;
+          meteoValues.DarknessCheck=false;
       }
       if (strcasecmp(name,"ClarityCheck")==0){
         if(strcasecmp(value,"on")==0 )
-          ClarityCheck=true;
+          meteoValues.ClarityCheck=true;
         else
-          ClarityCheck=false;
+          meteoValues.ClarityCheck=false;
       }
      if (strcasecmp(name,"SkyTempCheck")==0){
         if(strcasecmp(value,"on") ==0)
-          SkyTempCheck=true;
+          meteoValues.SkyTempCheck=true;
         else
-          SkyTempCheck=false;
+          meteoValues.SkyTempCheck=false;
       }
      if (strcasecmp(name,"PluieCheck")==0){
         if(strcasecmp(value,"on")==0 )
-          RainCheck=true;
+          meteoValues.RainCheck=true;
         else
-          RainCheck=false;
+          meteoValues.RainCheck=false;
       }
      if (strcasecmp(name,"HumCheck")==0){
         if(strcasecmp(value,"on")==0 )
-          HumidityCheck=true;
+          meteoValues.HumidityCheck=true;
         else
-          HumidityCheck=false;
+          meteoValues.HumidityCheck=false;
       }      
   
   
 // value
 
       if (strcasecmp(name,"ObscurityValue")==0){
-        DarknessTheshold = atof(value);
+        meteoValues.DarknessTheshold = atof(value);
       }
       if (strcasecmp(name,"ClarityValue")==0){
-        ClarityThreshold = atof(value);
+        meteoValues.ClarityThreshold = atof(value);
       }
      if (strcasecmp(name,"SkyTempValue")==0){
-        SkyTempThreShold = atof(value);
+        meteoValues.SkyTempThreShold = atof(value);
       }
      if (strcasecmp(name,"PluieValue")==0){
-        RainThreshold = atof(value);
+        meteoValues.RainThreshold = atof(value);
       }
      if (strcasecmp(name,"HumValue")==0){
-        HumidityThresold = atof(value);
+        meteoValues.HumidityThresold = atof(value);
       }      
       
       }while (repeat);
     }
     HtmlCmd(server,type,url,false);
-   Serial << "DarknessCheck : " <<DarknessCheck <<"\n";
-   Serial << "DarknessValue : "<<DarknessTheshold <<"\n";
+    saveMeteoConfig();
 }  
 
 
@@ -507,30 +506,30 @@ P(message15)=
     if (FermetureAuto)
       server.print("checked='checked'");
      server.printP(message51);
-    if (DarknessCheck)
+    if (meteoValues.DarknessCheck)
       server.print("checked='checked'");
     server.printP(message6);
-    server.print(DarknessTheshold);
+    server.print(meteoValues.DarknessTheshold);
     server.printP(message7);
-    if (ClarityCheck)
+    if (meteoValues.ClarityCheck)
       server.print("checked='checked'");
     server.printP(message8);
-    server.print(ClarityThreshold);
+    server.print(meteoValues.ClarityThreshold);
     server.printP(message9);
-    if (SkyTempCheck)
+    if (meteoValues.SkyTempCheck)
       server.print("checked='checked'");
     server.printP(message10);
-    server.print(SkyTempThreShold);
+    server.print(meteoValues.SkyTempThreShold);
     server.printP(message11);
-    if (RainCheck)
+    if (meteoValues.RainCheck)
       server.print("checked='checked'");
     server.printP(message12);
-    server.print(RainThreshold);
+    server.print(meteoValues.RainThreshold);
     server.printP(message13);
-    if (HumidityCheck)
+    if (meteoValues.HumidityCheck)
       server.print("checked='checked'");
     server.printP(message14);
-    server.print(HumidityThresold);
+    server.print(meteoValues.HumidityThresold);
     server.printP(message15);
 
   }

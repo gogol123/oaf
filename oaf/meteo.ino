@@ -1,4 +1,6 @@
 
+#define METEOCONFIG_START 0
+
 // current date coming from cloud detector
 
 float SkyTemp = 0.0;
@@ -9,21 +11,27 @@ float Humidity = 0.0;
 float AmbTemp = 0.0;
 
 
-// Threshod value
-
-float SkyTempThreShold;
-float DarknessTheshold;
-float ClarityThreshold;
-float RainThreshold;
-float HumidityThresold;
-
-//check
-
-boolean SkyTempCheck = false;
-boolean ClarityCheck = false;
-boolean RainCheck = false;
-boolean HumidityCheck = false;
-boolean DarknessCheck = false;
+struct meteoConfig {
+  // Threshod value
+  float SkyTempThreShold;
+  float DarknessTheshold;
+  float ClarityThreshold;
+  int   RainThreshold;
+  float HumidityThresold;
+  //check
+  boolean SkyTempCheck ;
+  boolean ClarityCheck ;
+  boolean RainCheck ;
+  boolean HumidityCheck ;
+  boolean DarknessCheck ;
+} meteoValues = {
+  5.0,
+  18.0,
+  20.0,
+  2100,
+  90,
+  true,false,false,false,false
+};
 
 long timerMeteo;
 
@@ -95,3 +103,15 @@ void decodeLine(String line,String ref,float *value) {
      
 } 
 
+
+void loadMeteoConfig(void) {
+    for (unsigned int t=0; t<sizeof(meteoConfig); t++)
+     *((char*)&meteoValues + t) = EEPROM.read(METEOCONFIG_START + t);
+
+}
+
+void saveMeteoConfig(void) {
+   for (unsigned int t=0; t<sizeof(meteoConfig); t++)
+      EEPROM.write(METEOCONFIG_START + t, *((char*)&meteoValues + t));
+}
+  

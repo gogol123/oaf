@@ -1,3 +1,5 @@
+#include <EEPROM.h>
+
 
 
 
@@ -202,10 +204,12 @@ void setup()
 
   webserver.begin();
  
-   TelescopeTpl2Connected= tpl2Connect(ntm);
-  starTimerTelescopeStatus = millis();  
- starTimerMeteo = millis();  
+  TelescopeTpl2Connected= tpl2Connect(ntm);
+   starTimerTelescopeStatus = millis();  
+   starTimerMeteo = millis();  
 
+
+  loadMeteoConfig();
   watchdogSetup();
   LogOnInternet(1,"reboot_arduino","system");
 
