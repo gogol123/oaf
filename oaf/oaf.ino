@@ -34,7 +34,7 @@ template<class T>
 inline Print &operator <<(Print &obj, T arg)
 { obj.print(arg); return obj; }
 
-#define AdminCredential "YWRtaW46c2Focg==" //admin:sahr
+#define AdminCredential "YWRtaW46c2Focg==" 
 
 
 //----------------------------------
@@ -293,7 +293,7 @@ void loop()
   
 
   if (TelescopeTpl2Connected) {
-    if (millis() -starTimerTelescopeStatus > 2000 ){ // check telescope status every 5s
+    if (millis() -starTimerTelescopeStatus > 2000 ){ // check telescope status every 2s
          CapteurTelescope=tpl2IsTelescopeParked();
         starTimerTelescopeStatus = millis();
     }
@@ -302,7 +302,7 @@ void loop()
      CapteurTelescope=false;
    }
   
-  if (FermetureAuto && (millis()-starTimerMeteo >5000)){
+  if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
     GetMeteoSensor();
     starTimerMeteo=millis();
   }
