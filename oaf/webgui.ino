@@ -382,6 +382,7 @@ P(message2)=
 "	$('#FermetureAuto').click(function(){"
 "               var status = $('#FermetureAuto').is(':checked');"
 "		$.get('/connectTelecsope',{FerAuto:status});"
+"              if (status) "
 "	});"
 "  });";
 P(message3) = 
