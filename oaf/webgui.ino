@@ -329,6 +329,7 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 P(message1)=
 "                   $('#poweroff').button(data.Telescope==1?'enable':'disable');"
 "                   $('#ConnectTpl2').attr('checked',data.TelescopeTpl2Connected==1);"
+"		    $('#tableau').hide();"
 "                   if (data.CurrentState==8) "
 "                        $('#statusLabel').css('color','red');"
 "                   else"
