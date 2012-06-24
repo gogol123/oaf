@@ -132,6 +132,11 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
   if (type == WebServer::POST) {
     bool repeat;
     char name[16], value[16];
+    meteoValues.DarknessCheck = false ;
+    meteoValues.ClarityCheck=false;
+    meteoValues.SkyTempCheck=false;
+    meteoValues.RainCheck=false;
+    meteoValues.HumidityCheck=false;
     do
     {
       /* readPOSTparam returns false when there are no more parameters
@@ -139,42 +144,28 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
        * the name and value strings along with the length of those
        * buffers. */
       repeat = server.readPOSTparam(name, 16, value, 16);
-      Serial.print("name :");
-      Serial.print(name);
-      Serial.print(" Value :");
-      Serial.println(value);
       if (strcasecmp(name,"ObscurityCheck")==0){
         if(strcasecmp(value,"on")==0) 
           meteoValues.DarknessCheck=true;
-        else
-          meteoValues.DarknessCheck=false;
       }
       if (strcasecmp(name,"ClarityCheck")==0){
         if(strcasecmp(value,"on")==0 )
           meteoValues.ClarityCheck=true;
-        else
-          meteoValues.ClarityCheck=false;
       }
      if (strcasecmp(name,"SkyTempCheck")==0){
         if(strcasecmp(value,"on") ==0)
           meteoValues.SkyTempCheck=true;
-        else
-          meteoValues.SkyTempCheck=false;
       }
      if (strcasecmp(name,"PluieCheck")==0){
         if(strcasecmp(value,"on")==0 )
           meteoValues.RainCheck=true;
-        else
-          meteoValues.RainCheck=false;
       }
      if (strcasecmp(name,"HumCheck")==0){
         if(strcasecmp(value,"on")==0 )
           meteoValues.HumidityCheck=true;
-        else
-          meteoValues.HumidityCheck=false;
       }      
   
-  
+       
 // value
 
       if (strcasecmp(name,"ObscurityValue")==0){
@@ -195,8 +186,11 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
       
       }while (repeat);
     }
-    HtmlCmd(server,type,url,false);
+    
+
     saveMeteoConfig();
+
+    HtmlCmd(server,type,url,false);
 }  
 
 

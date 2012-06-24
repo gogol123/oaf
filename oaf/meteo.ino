@@ -30,7 +30,7 @@ struct meteoConfig {
   20.0,
   2100,
   90,
-  false,false,false,false,true
+  false,false,false,false,false
 };
 
 long timerMeteo;
@@ -145,12 +145,15 @@ void decodeLine(String line,String ref,float *value) {
 
 
 void loadMeteoConfig(void) {
+   Serial << "load config \n";
     for (unsigned int t=0; t<sizeof(meteoConfig); t++)
      *((char*)&meteoValues + t) = EEPROM.read(METEOCONFIG_START + t);
 
 }
 
 void saveMeteoConfig(void) {
+     Serial << "save config \n";
+
    for (unsigned int t=0; t<sizeof(meteoConfig); t++)
       EEPROM.write(METEOCONFIG_START + t, *((char*)&meteoValues + t));
 }

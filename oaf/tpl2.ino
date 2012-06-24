@@ -10,6 +10,7 @@
 
 
 EthernetClient clientNtm;
+EthernetClient client_OAFServer;
 
 
 
@@ -129,7 +130,7 @@ void tpl2Power(boolean state) {
 
 void tpl2Park(void) {
   
-  if (isParking && (millis()-ParkTimer < 60000)) {
+  if (isParking && (millis()-ParkTimer < 10000)) {
     return; 
   }  
   else {
@@ -197,3 +198,15 @@ float Stingtofloat(String  str)
       return atof(buffer);
 
 }
+
+boolean KillAstelOs(void){
+   if (client_OAFServer.connect(OAFServer,8080)) {
+     Serial << "Kill AstelOs \n";
+      client_OAFServer.println("GET /ntm/kill HTTP/1.1");
+      client_OAFServer.println();
+      client_OAFServer.stop();
+      client_OAFServer.flush();
+
+   }
+}
+

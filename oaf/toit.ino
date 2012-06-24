@@ -110,6 +110,7 @@ void ManageToit(){
  #if DEBUG > 2
         Serial << "park telescop \n";
  #endif
+         KillAstelOs();
         tpl2Park();
         if (CapteurTelescope){
             tpl2Power(false);
