@@ -308,14 +308,17 @@ void loop()
   
   if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
     GetMeteoSensor();
-    if (IsClosedNeeded())
+    if (IsClosedNeeded()){
       NbCheckBeforeClose ++;
-    if (NbCheckBeforeClose ==  2){
-      Serial << "Femeture du toit sur condition meteo \n";
-      UserAction=ActionFermeture;
-      LogOnInternet(1,"Femeture_du_toit_sur_condition_meteo","system");
-      NbCheckBeforeClose = 0;
+      if (NbCheckBeforeClose ==  2){
+        Serial << "Femeture du toit sur condition meteo \n";
+        UserAction=ActionFermeture;
+        LogOnInternet(1,"Femeture_du_toit_sur_condition_meteo","system");
+        NbCheckBeforeClose = 0;
+      }
     }
+    else
+      NbCheckBeforeClose=0;
       
     starTimerMeteo=millis();
   }

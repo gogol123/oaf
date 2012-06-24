@@ -97,23 +97,34 @@ void GetMeteoSensor(){
 
 boolean IsClosedNeeded(void){
   if (FermetureAuto) {
+    char alert[50];
       if (meteoValues.DarknessCheck && (Darkness < meteoValues.DarknessTheshold)){
+          sprintf(alert,"Fermeture_auto_darkness_%d_<%d",(int)Darkness,(int)meteoValues.DarknessTheshold);
+          LogOnInternet(1,alert,"system");
           Serial << " Fermeture Auto - Darness :  " <<Darkness  << "< " << meteoValues.DarknessTheshold <<"\n";
           return true;
       }
       if (meteoValues.SkyTempCheck && (SkyTemp > meteoValues.SkyTempThreShold)){
+          sprintf(alert,"Fermeture_auto_skytemp_%d_<%d",(int)SkyTemp,(int)meteoValues.SkyTempThreShold);
+           LogOnInternet(1,alert,"system");
           Serial << " Fermeture Auto - SkyTemp :  " <<SkyTemp  << "> " << meteoValues.SkyTempThreShold <<"\n";
          return true;
       }
       if (meteoValues.ClarityCheck && (Clarity > meteoValues.ClarityThreshold)){
-          Serial << " Fermeture Auto - Clarit : " << Clarity  << "> " << meteoValues.ClarityThreshold <<"\n";
+          sprintf(alert,"Fermeture_auto_Clarity_%d_<%d",(int)Clarity,(int)meteoValues.ClarityThreshold);
+           LogOnInternet(1,alert,"system");
+          Serial << " Fermeture Auto - Clarity : " << Clarity  << "> " << meteoValues.ClarityThreshold <<"\n";
          return true;
       }
       if (meteoValues.RainCheck && (Rain > meteoValues.RainThreshold)){
+           sprintf(alert,"Fermeture_auto_Rain_%d_<%d",(int)Rain,(int)meteoValues.RainThreshold);
+          LogOnInternet(1,alert,"system");
           Serial << " Fermeture Auto - Rain :  "  <<Rain  << "> " << meteoValues.RainThreshold <<"\n";
          return true;
       }
       if (meteoValues.HumidityCheck && (Humidity > meteoValues.HumidityThresold)){
+          sprintf(alert,"Fermeture_auto_Humidity_%d_<%d",(int)Humidity,(int)meteoValues.HumidityThresold);
+           LogOnInternet(1,alert,"system");
          Serial << " Fermeture Auto - Humidity :  "  <<Humidity  << "> " << meteoValues.HumidityThresold <<"\n";
          return true;
       }
