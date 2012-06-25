@@ -37,12 +37,16 @@ namespace OAFKayak
                 if (request.Uri.EndsWith("kill"))
                 {
                     Process[] processes = Process.GetProcessesByName("AsTelOS Express");
-
-
                     foreach (Process process in processes)
                     {
                         process.Kill();
-                        // process.WaitForExit();
+                        
+                    }
+                    processes = Process.GetProcessesByName("ttTCLM_ASCOM_Telescope");
+                    foreach (Process process in processes)
+                    {
+                        process.Kill();
+                        
                     }
                     body = "{ok}";
 

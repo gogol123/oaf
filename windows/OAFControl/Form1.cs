@@ -27,14 +27,14 @@ namespace OAFControl
     {
         private static WorkerKayak workerObject;
         private bool allowshowdisplay = false;
-    
+        private Thread workerThread;
 
         public Form1()
         {
             InitializeComponent();
 
             workerObject = new WorkerKayak();
-            Thread workerThread = new Thread(workerObject.Start);
+            workerThread = new Thread(workerObject.Start);
             workerThread.Start();
            
         }
@@ -74,6 +74,7 @@ namespace OAFControl
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            workerThread.Abort(); 
             Application.Exit();
         }
 
@@ -81,18 +82,22 @@ namespace OAFControl
 	
 	 public class WorkerKayak
     {
+         
+
         public void Start()
         {
-            var scheduler = KayakScheduler.Factory.Create(new SchedulerDelegate());
-            var server = KayakServer.Factory.CreateHttp(new RequestDelegate(), scheduler);
+            var  scheduler = KayakScheduler.Factory.Create(new SchedulerDelegate());
+            var  server = KayakServer.Factory.CreateHttp(new RequestDelegate(), scheduler);
 
-            using (server.Listen(new IPEndPoint(IPAddress.Any, 8081)))
+            using (server.Listen(new IPEndPoint(IPAddress.Any, 8080)))
             {
                 // runs scheduler on calling thread. this method will block until
                 // someone calls Stop() on the scheduler.
                 scheduler.Start();
             }
         }
+       
+            
 
     }
 }
