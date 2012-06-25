@@ -1,4 +1,4 @@
-
+long timerAeration = 0;
 
 void ManageToit(){
   switch (CurrentState) {
@@ -11,7 +11,7 @@ void ManageToit(){
         MoteurFermetureTympanOff();
         MoteurOuvertureToitOff();
         MoteurFermetureToitOff();
-        if ((UserAction == ActionOuverturePartiel || UserAction==ActionOuvertureTotal ) && !CapteurTympanOuvert &&CapteurTelescope)
+        if ((UserAction == ActionOuverturePartiel || UserAction==ActionOuvertureTotal  ||UserAction==ActionOuvertureAeration ) && !CapteurTympanOuvert &&CapteurTelescope)
             CurrentState = StateTympanOuverture1;
         break;
       case StateTympanOuverture1 :
@@ -19,8 +19,10 @@ void ManageToit(){
         Serial <<  "Tympan Ouverture 1 \n";
 #endif
         MoteurOuvertureTympanOn(10);
-        if(CapteurTympanIntermediaire)
-          CurrentState=StateToitOuverture;
+        if(CapteurTympanIntermediaire){
+          CurrentState=StateToitOuverture1;
+          timerAeration = millis();
+        }
         if (UserAction==ActionFermeture &&!CapteurTympanFermer)
           CurrentState=StateTympanFermeture1;
         break;
@@ -45,11 +47,36 @@ void ManageToit(){
         if (CapteurTympanFermer)
           CurrentState=StateToitFerme;
         break;
-      case StateToitOuverture:
+      case StateToitOuverture1:
 #if DEBUG > 2
-        Serial << "Toit  Ouverture \n";
+        Serial << "Toit  Ouverture 1 \n";
 #endif
-        MoteurOuvertureToitOn(40);
+        MoteurOuvertureToitOn(46);
+        MoteurOuvertureTympanOff();
+        if(  UserAction ==ActionOuverturePartiel || UserAction== ActionOuvertureTotal )
+          CurrentState=StateToitOuverture2;
+        if (UserAction ==ActionFermeture && !CapteurToitFermer)
+          CurrentState = StateToitFermeture;
+         if (UserAction == ActionOuvertureAeration && (millis()-timerAeration > 4000))
+           CurrentState=StateToitAeration;
+       break;
+    case StateToitAeration:
+#if DEBUG > 2
+        Serial << "Toit  Aeration  \n";
+#endif
+        MoteurOuvertureToitOff();
+        MoteurOuvertureTympanOff();
+        if (UserAction ==ActionFermeture && !CapteurToitFermer)
+          CurrentState = StateToitFermeture;
+        if(  UserAction ==ActionOuverturePartiel || UserAction== ActionOuvertureTotal )
+          CurrentState=StateToitOuverture2;
+
+       break;
+     case StateToitOuverture2:
+#if DEBUG > 2
+        Serial << "Toit  Ouverture 2 \n";
+#endif
+        MoteurOuvertureToitOn(36);
         MoteurOuvertureTympanOff();
         if(CapteurToitOuvert && UserAction ==ActionOuverturePartiel)
           CurrentState=StateToitOuvert;
@@ -104,7 +131,6 @@ void ManageToit(){
           CurrentState=StateToitFermeture ;
          if (CapteurTympanFermer)
              CurrentState= StateToitFerme;
-         
        break;   
        case StateParkTelescope:
  #if DEBUG > 2

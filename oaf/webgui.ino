@@ -248,6 +248,10 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
             UserAction =ActionOuverturePartiel;
             LogOnInternet(1,"ouverture_partielle_internet","system");
           }
+         if (strcasecmp(value,"ouvertureA")==0 ){
+            UserAction =ActionOuvertureAeration;
+            LogOnInternet(1,"ouverture_aeartion_internet","system");
+          }
           if (strcasecmp(value,"fermeture") ==0  ){
             UserAction =ActionFermeture;
             LogOnInternet(1,"fermeture_internet","system");
@@ -304,7 +308,7 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 "  <script>"
 "       var statusTable = ['Toit fermé ','Tympan Ouverture intermedaire','Tympan ouverture totale','',"
 "                           'Tympan fermeture','Toit fermeture','Toit ouverture','Toit ouvert','Arret Urgence',"
-"                            'Tympan fermeture','Park Téléscope'];"
+"                            'Tympan fermeture','Park Téléscope','Toit ouverture','Toit aeration'];"
 "	function updateSchema(){"
 "	    $.getJSON('/json/capteur',function(data){"
 "	            $('#Telescope').css('background-color',((data.Telescope==0)?'red':'green'));"
@@ -327,21 +331,21 @@ P(message1)=
 "                   else"
 "                        $('#statusLabel').css('color','black');"
 "                   if (data.TelescopeTpl2Connected==0) {"
-"                          $('#fermeture,#ouvertureT,#ouvertureP,#stop').button('disable');"
+"                          $('#fermeture,#ouvertureT,#OuvertureA,#ouvertureP,#stop').button('disable');"
 "                  } else {"
 "                      if ( data.Telescope==0 )"
-"                           $('#ouvertureT,#ouvertureP').button('disable');"
+"                           $('#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
 "	                if(data.CurrentState==0) { "
 "	            	    $('#fermeture').button('disable');"
-"	            	    $('#ouvertureT,#ouvertureP').button('enable');"
+"	            	    $('#ouvertureT,#ouvertureP,#OuvertureA').button('enable');"
 "		        } else if (data.CurrentState==7) { "
 "	          	    $('#fermeture').button('enable');"
-"	            	    $('#ouvertureT,#ouvertureP').button('disable');"
+"	            	    $('#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
 "	        	}"
 "	        	else  "
-"	          	    $('#fermeture,#ouvertureT,#ouvertureP').button('disable');"
+"	          	    $('#fermeture,#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
 "                   if (data.CurrentState==8 || $('#security').is(':checked'))  "
-"            	        $('#fermeture,#ouvertureT,#ouvertureP').button('enable');"
+"            	        $('#fermeture,#ouvertureT,#ouvertureP,#OuvertureA').button('enable');"
 "                 }"
 "	    });"
 "	};";
@@ -419,6 +423,7 @@ P(message3) =
 "    	</div>"
 "		<button id ='ouvertureT'> Ouverture total</button>"
 "		<button id= 'ouvertureP'> Ouverture partielle</button>"
+"		<button id= 'ouvertureA'> Ouverture aeration</button>"
 "		<button id='fermeture'> Fermeture</button>"
 "		<button id='stop'> Stop!</button>"
 "    </div>";

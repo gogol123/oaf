@@ -93,6 +93,7 @@ ISR(WDT_vect) // Watchdog timer interrupt.
 #define ActionFermeture          3
 #define ActionStop               4
 #define ActionFemetureSansPark   5
+#define ActionOuvertureAeration  6
 
 
 #define StateToitFerme            0
@@ -100,11 +101,14 @@ ISR(WDT_vect) // Watchdog timer interrupt.
 #define StateTympanOuverture2     2
 #define StateTympanFermeture1     4
 #define StateToitFermeture        5
-#define StateToitOuverture        6
+#define StateToitOuverture1       6
 #define StateToitOuvert           7
 #define StateArretUrgence         8
 #define StateTympanFermeture2     9
 #define StateParkTelescope        10
+#define StateToitOuverture2       11
+#define StateToitAeration         12
+
 
 
 byte CurrentState = StateArretUrgence;
