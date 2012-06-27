@@ -51,10 +51,12 @@ void connectTelecope(WebServer &server, WebServer::ConnectionType type, char *ur
   
     while (strlen(url_tail)){
         rc = server.nextURLparam(&url_tail, name, NAMELEN, value, VALUELEN);
+#if DEBUG > 2
         Serial.println(name);
        Serial.println(value );
+#endif
       if (rc == URLPARAM_EOS)
-        Serial <<"fin \n";
+        ;
      else {
        if (strcasecmp(name,"Tpl2")==0) {
         if (strcasecmp(value,"true") ==0){
@@ -90,7 +92,7 @@ void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tai
     while (strlen(url_tail)){
         rc = server.nextURLparam(&url_tail, name, NAMELEN, value, VALUELEN);
       if (rc == URLPARAM_EOS)
-        Serial <<"fin \n";
+        ;
      else {
       if (strcasecmp(value,"lumiereOn") ==0){
             transmitHomeEasy(true,0); // 0 adress de la lampe

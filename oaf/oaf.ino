@@ -115,7 +115,7 @@ byte CurrentState = StateArretUrgence;
 
 boolean TelescopeTpl2Connected = true;
 boolean FermetureAuto = false;
-boolean NbCheckBeforeClose = 0;
+byte NbCheckBeforeClose = 0;
 byte UserAction = NoAction;
 
 
@@ -233,32 +233,32 @@ void loop()
 
   CapteurToitOuvert = false ;
   if (!digitalRead(EntreeCapteurToitOuvert)){
-    delay(50);
+    delay(100);
     if (!digitalRead(EntreeCapteurToitOuvert))
        CapteurToitOuvert = true ;
   }
   
   CapteurToitFermer = false;
   if (!digitalRead(EntreeCapteurToitFermer)){
-    delay(50);
+    delay(100);
     if (!digitalRead(EntreeCapteurToitFermer))
        CapteurToitFermer = true;
   }
   CapteurTympanOuvert = false;
   if (!digitalRead(EntreeCapteurTympanOuvert)){
-    delay(50);
+    delay(100);
     if (!digitalRead(EntreeCapteurTympanOuvert))
        CapteurTympanOuvert = true;
   }
   CapteurTympanFermer = false;
   if (!digitalRead(EntreeCapteurTympanFermer)){
-    delay(50);
+    delay(100);
     if (!digitalRead(EntreeCapteurTympanFermer))
        CapteurTympanFermer = true;  
   }
   CapteurTympanIntermediaire = false;
   if (!digitalRead(EntreeCapteurTympanIntermediaire)){
-    delay(50);
+    delay(100);
     if (!digitalRead(EntreeCapteurTympanIntermediaire))
        CapteurTympanIntermediaire = true;
   }  
@@ -285,6 +285,19 @@ void loop()
         }
     }
 } 
+
+#if DEBUG > 1
+      Serial.print("Etat capteur :");
+      Serial.print(CapteurTympanFermer);
+      Serial.print(CapteurTympanIntermediaire);
+      Serial.print(CapteurTympanOuvert);
+      Serial.print(CapteurToitFermer);
+      Serial.print(CapteurToitOuvert);
+      Serial.print(" CurrentState:");
+      Serial.print(CurrentState);
+      Serial.print(" UserAction:");
+      Serial.prinln(UserAction);
+#endif
   ManageToit();
 
   
