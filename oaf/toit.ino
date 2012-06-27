@@ -57,7 +57,7 @@ void ManageToit(){
           CurrentState=StateToitOuverture2;
         if (UserAction ==ActionFermeture && !CapteurToitFermer)
           CurrentState = StateToitFermeture;
-         if (UserAction == ActionOuvertureAeration && (millis()-timerAeration > 4000))
+         if (UserAction == ActionOuvertureAeration && (millis()-timerAeration > 5000))
            CurrentState=StateToitAeration;
        break;
     case StateToitAeration:

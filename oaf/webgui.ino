@@ -122,6 +122,7 @@ void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tai
      }
    }
   }
+  server.httpSuccess();
 }
 
  
@@ -331,21 +332,23 @@ P(message1)=
 "                   else"
 "                        $('#statusLabel').css('color','black');"
 "                   if (data.TelescopeTpl2Connected==0) {"
-"                          $('#fermeture,#ouvertureT,#OuvertureA,#ouvertureP,#stop').button('disable');"
+"                          $('#fermeture,#ouvertureT,#ouvertureA,#ouvertureP').button('disable');"
 "                  } else {"
 "                      if ( data.Telescope==0 )"
-"                           $('#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
+"                           $('#ouvertureT,#ouvertureP,#ouvertureA').button('disable');"
 "	                if(data.CurrentState==0) { "
 "	            	    $('#fermeture').button('disable');"
-"	            	    $('#ouvertureT,#ouvertureP,#OuvertureA').button('enable');"
+"	            	    $('#ouvertureT,#ouvertureP,#ouvertureA').button('enable');"
 "		        } else if (data.CurrentState==7) { "
 "	          	    $('#fermeture').button('enable');"
-"	            	    $('#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
-"	        	}"
+"	            	    $('#ouvertureT,#ouvertureP,#ouvertureA').button('disable');"
+"	        	} else if (data.CurrentState==12) {"
+"                            $('#ouvertureT,#ouvertureP,#fermeture').button('enable');"
+"                        }"
 "	        	else  "
-"	          	    $('#fermeture,#ouvertureT,#ouvertureP,#OuvertureA').button('disable');"
+"	          	    $('#fermeture,#ouvertureT,#ouvertureP,#ouvertureA').button('disable');"
 "                   if (data.CurrentState==8 || $('#security').is(':checked'))  "
-"            	        $('#fermeture,#ouvertureT,#ouvertureP,#OuvertureA').button('enable');"
+"            	        $('#fermeture,#ouvertureT,#ouvertureP,#ouvertureA').button('enable');"
 "                 }"
 "	    });"
 "	};";
@@ -424,7 +427,7 @@ P(message3) =
 "		<button id ='ouvertureT'> Ouverture total</button>"
 "		<button id= 'ouvertureP'> Ouverture partielle</button>"
 "		<button id= 'ouvertureA'> Ouverture aeration</button>"
-"		<button id='fermeture'> Fermeture</button>"
+"		<br><button id='fermeture'> Fermeture</button>"
 "		<button id='stop'> Stop!</button>"
 "    </div>";
 P(message4)=
