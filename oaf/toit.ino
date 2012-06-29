@@ -90,6 +90,8 @@ void ManageToit(){
         Serial << "Toit Fermeture \n";
 #endif
         MoteurFermetureTympanOff();
+        MoteurOuvertureTympanOff();
+
         MoteurOuvertureToitOff();
         MoteurFermetureToitOn(40);
         if (   CapteurToitFermer  ) 
@@ -130,7 +132,7 @@ void ManageToit(){
         if (CapteurTympanIntermediaire   )
           CurrentState=StateToitFermeture ;
          if (CapteurTympanFermer)
-             CurrentState= StateToitFerme;
+             CurrentState= StateTympanOuverture3;
        break;   
        case StateParkTelescope:
  #if DEBUG > 2
@@ -143,7 +145,15 @@ void ManageToit(){
             CurrentState= StateTympanFermeture2;
         }
        break;   
-      
+      case StateTympanOuverture3:
+  #if DEBUG > 2
+        Serial << "RE ouverture tympan intermediaire \n";
+ #endif
+        MoteurOuvertureTympanOn(10);
+        if(CapteurTympanIntermediaire)  
+          CurrentState=StateToitFermeture;
+         break;
+
       default :
  #if DEBUG > 2
         Serial << " Error !! \n";

@@ -136,6 +136,7 @@ boolean IsClosedNeeded(void){
 #endif
          return true;
       }
+      return false;
   }
 }
 

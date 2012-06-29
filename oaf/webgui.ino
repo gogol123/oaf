@@ -311,7 +311,7 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 "  <script>"
 "       var statusTable = ['Toit fermé ','Tympan Ouverture intermedaire','Tympan ouverture totale','',"
 "                           'Tympan fermeture','Toit fermeture','Toit ouverture','Toit ouvert','Arret Urgence',"
-"                            'Tympan fermeture','Park Téléscope','Toit ouverture','Toit aeration'];"
+"                            'Tympan fermeture','Park Téléscope','Toit ouverture','Toit aeration','Tympan Ouverture intermedaire'];"
 "	function updateSchema(){"
 "	    $.getJSON('/json/capteur',function(data){"
 "	            $('#Telescope').css('background-color',((data.Telescope==0)?'red':'green'));"

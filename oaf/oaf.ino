@@ -29,7 +29,7 @@ void transmitHomeEasy(int blnOn,int recipient);
 void itob(unsigned long integer, int length);
 
 
-//#define DEBUG 3
+//#define DEBUG 2
 
  long  timer ;
 template<class T>
@@ -108,6 +108,7 @@ ISR(WDT_vect) // Watchdog timer interrupt.
 #define StateParkTelescope        10
 #define StateToitOuverture2       11
 #define StateToitAeration         12
+#define StateTympanOuverture3     13
 
 
 
@@ -296,7 +297,7 @@ void loop()
       Serial.print(" CurrentState:");
       Serial.print(CurrentState);
       Serial.print(" UserAction:");
-      Serial.prinln(UserAction);
+      Serial.println(UserAction);
 #endif
   ManageToit();
 
