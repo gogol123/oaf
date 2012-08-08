@@ -85,6 +85,13 @@
 			$('#tableau').hide();
 
 	});
+	$('#FermetureHoraire').click(function(){
+		if ( $('#FermetureHoraire').is(':checked'))
+			$('#Horaire').show();
+		else
+			$('#Horaire').hide();
+
+	});
   });
 setInterval('updateSchema();',1000); 
   </script>
@@ -148,7 +155,7 @@ setInterval('updateSchema();',1000);
        </div>
     <div id='fragment-1'>
         <div>
-			<input type ='checkbox'  id = 'FermetureAuto' >Fermeture auto			
+			<input type ='checkbox'  id = 'FermetureAuto' >Fermeture meteo			
 			<div id = 'tableau' >&nbsp &nbsp &nbsp &nbsp Si une des conditions est vrai => Park du telescope et fermeture du toit<br><br>
 			<form method='post' action ='/FermetureAuto' ><table id ='tableau'>		
 
@@ -159,6 +166,9 @@ setInterval('updateSchema();',1000);
 				<tr><td><input type ='checkbox'  name = 'HumCheck'>Humidite</td><td>></td><td><input name=HumValue size=3 />%</td></tr>
 				<tr colspan=3><td ><button id='valider' type='submit'> Valider </button></td></tr>
 			</table> </form></div>
+			<br><input type ='checkbox'  id = 'FermetureHoraire' >Fermeture horloge		
+			<form method='post' action='/FermetureHoraire' id ='Horaire'>Heure : <input name = 'Time' size = 5/> HH:MM <br> <button id = 'valider2' type ='submit'> Valider </button></form>
+
 	 </div>
        </div>
 </div></body></html>
