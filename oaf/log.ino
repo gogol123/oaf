@@ -11,6 +11,7 @@ void InitLog(void){
   DNSClient dns;
   dns.begin(Ethernet.dnsServerIP());
   dns.getHostByName(serverName, freeperso);
+  Serial << "freeperso : " << freeperso << "\n";
 
 }
 

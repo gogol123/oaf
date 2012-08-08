@@ -196,7 +196,7 @@ void setup()
   Ethernet.begin(mac, localIp,dnsIP);
   
   W5100.setRetransmissionTime(0x07D0);
-  W5100.setRetransmissionCount(3);
+  W5100.setRetransmissionCount(5);
   
   InitLog();
   
@@ -325,8 +325,8 @@ void loop()
    }
   
   if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
-    GetMeteoSensor();
-    if (IsClosedNeeded()){
+    if (GetMeteoSensor()){
+     if (IsClosedNeeded()){
       NbCheckBeforeClose ++;
       if (NbCheckBeforeClose ==  2){
         Serial << "Femeture du toit sur condition meteo \n";
@@ -337,6 +337,7 @@ void loop()
     }
     else
       NbCheckBeforeClose=0;
+    }
       
     starTimerMeteo=millis();
   }

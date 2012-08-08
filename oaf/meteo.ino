@@ -38,7 +38,7 @@ long timerMeteo;
   char Anwser[50];
   int i = 0;
 
-void GetMeteoSensor(){
+boolean GetMeteoSensor(){
   
   timerMeteo = millis();
   
@@ -50,9 +50,11 @@ void GetMeteoSensor(){
   }
   else {
     // kf you didn't get a connection to the server:
+    LogOnInternet(2,"connection_to_meteo_failed","system");
 #if DEBUG >2
-    Serial.println("connection failed to MeteoArduino");
+    Serial.println("connectionfailed to MeteoArduino");
 #endif
+  return false;
   }
   delay(50);
   
@@ -72,6 +74,7 @@ void GetMeteoSensor(){
 //      decodeLine(line,"Rain",&Rain);
       decodeLine(line,"DHTHum",&Humidity);
     }
+    return true;
   }
   
   Darkness = 19 - (2.5*log10(1000000.0/Darkness));
