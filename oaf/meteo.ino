@@ -51,10 +51,10 @@ boolean GetMeteoSensor(){
   else {
     // kf you didn't get a connection to the server:
     LogOnInternet(2,"connection_to_meteo_failed","system");
-#if DEBUG >2
+#if DEBUG >1
     Serial.println("connectionfailed to MeteoArduino");
 #endif
-  return false;
+    return false;
   }
   delay(50);
   
@@ -71,15 +71,14 @@ boolean GetMeteoSensor(){
       decodeLine(line,"SkyTemp",&SkyTemp);
       decodeLine(line,"DHTTemp",&AmbTemp);
       decodeLine(line,"Darkness",&Darkness);
-//      decodeLine(line,"Rain",&Rain);
+      decodeLine(line,"Rain",&Rain);
       decodeLine(line,"DHTHum",&Humidity);
     }
-    return true;
   }
   
   Darkness = 19 - (2.5*log10(1000000.0/Darkness));
   Clarity =  AmbTemp-SkyTemp;
-#if DEBUG > 2 
+#if DEBUG > 1 
   Serial.print("Time elapse :");
   Serial.println(millis()-timerMeteo);
   Serial << "SkyTemp : " << SkyTemp << " DHTTemp :" << AmbTemp << " Darkness :" << Darkness << "\n";
@@ -88,11 +87,12 @@ boolean GetMeteoSensor(){
 
   // if the server's disconnected, stop the client:
   if (!client_Meteo.connected()) {
-#if DEBUG >2
+#if DEBUG > 1
     Serial.println("disconnecting.");
 #endif
     client_Meteo.stop();
 }
+    return true;
 
 }
 
@@ -102,7 +102,7 @@ boolean IsClosedNeeded(void){
       if (meteoValues.DarknessCheck && (Darkness < meteoValues.DarknessTheshold)){
           sprintf(alert,"Fermeture_auto_darkness_%d_<%d",(int)Darkness,(int)meteoValues.DarknessTheshold);
           LogOnInternet(1,alert,"system");
-#if DEBUG > 2
+#if DEBUG > 1
           Serial << " Fermeture Auto - Darness :  " <<Darkness  << "< " << meteoValues.DarknessTheshold <<"\n";
 #endif
           return true;
@@ -110,7 +110,7 @@ boolean IsClosedNeeded(void){
       if (meteoValues.SkyTempCheck && (SkyTemp > meteoValues.SkyTempThreShold)){
           sprintf(alert,"Fermeture_auto_skytemp_%d_<%d",(int)SkyTemp,(int)meteoValues.SkyTempThreShold);
            LogOnInternet(1,alert,"system");
-#if DEBUG > 2
+#if DEBUG > 1
           Serial << " Fermeture Auto - SkyTemp :  " <<SkyTemp  << "> " << meteoValues.SkyTempThreShold <<"\n";
 #endif 
          return true;
@@ -118,7 +118,7 @@ boolean IsClosedNeeded(void){
       if (meteoValues.ClarityCheck && (Clarity > meteoValues.ClarityThreshold)){
           sprintf(alert,"Fermeture_auto_Clarity_%d_<%d",(int)Clarity,(int)meteoValues.ClarityThreshold);
            LogOnInternet(1,alert,"system");
-#if DEBUG > 2           
+#if DEBUG > 1          
           Serial << " Fermeture Auto - Clarity : " << Clarity  << "> " << meteoValues.ClarityThreshold <<"\n";
 #endif
          return true;
@@ -126,7 +126,7 @@ boolean IsClosedNeeded(void){
       if (meteoValues.RainCheck && (Rain > meteoValues.RainThreshold)){
            sprintf(alert,"Fermeture_auto_Rain_%d_<%d",(int)Rain,(int)meteoValues.RainThreshold);
           LogOnInternet(1,alert,"system");
-#if DEBUG > 2
+#if DEBUG > 1
           Serial << " Fermeture Auto - Rain :  "  <<Rain  << "> " << meteoValues.RainThreshold <<"\n";
 #endif
          return true;
@@ -134,7 +134,7 @@ boolean IsClosedNeeded(void){
       if (meteoValues.HumidityCheck && (Humidity > meteoValues.HumidityThresold)){
           sprintf(alert,"Fermeture_auto_Humidity_%d_<%d",(int)Humidity,(int)meteoValues.HumidityThresold);
            LogOnInternet(1,alert,"system");
-#if DEBUG > 2
+#if DEBUG > 1
          Serial << " Fermeture Auto - Humidity :  "  <<Humidity  << "> " << meteoValues.HumidityThresold <<"\n";
 #endif
          return true;

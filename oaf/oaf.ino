@@ -196,7 +196,7 @@ void setup()
   Ethernet.begin(mac, localIp,dnsIP);
   
   W5100.setRetransmissionTime(0x07D0);
-  W5100.setRetransmissionCount(5);
+  W5100.setRetransmissionCount(3);
   
   InitLog();
   
@@ -287,7 +287,7 @@ void loop()
     }
 } 
 
-#if DEBUG > 1
+#if DEBUG > 2
       Serial.print("Etat capteur :");
       Serial.print(CapteurTympanFermer);
       Serial.print(CapteurTympanIntermediaire);
@@ -324,7 +324,7 @@ void loop()
      CapteurTelescope=false;
    }
   
-  if (CurrentState==StateToitOuvert && FermetureAuto && (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
+  if ( CurrentState==StateToitOuvert && FermetureAuto &&  (millis()-starTimerMeteo >120000)){ // check metreo toutes les 2mn si le toit est ouvert
     if (GetMeteoSensor()){
      if (IsClosedNeeded()){
       NbCheckBeforeClose ++;
