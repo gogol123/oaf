@@ -28,8 +28,50 @@ var TelescopStatus = {
 
 };
 	
+exports.powerOn = function(){
+	ntmAnwser = "";
+	ntm.write("100 SET CABINET.POWER_STATE=1\n");
+}
 
-getNTMStatus = function () {
+exports.powerOff = function(){
+	ntmAnwser = "";
+	ntm.write("100 SET CABINET.POWER_STATE=0\n");
+}
+
+exports.park = function(){
+	ntmAnwser = "";
+	ntm.write("100 SET HA.TARGETPOS=0.0;DEC.TARGETPOS=-41.0\n");
+}
+
+
+export.slew(ra,dec) {
+	ntmAnwser = "";
+	ntm.write("100 POINTING.TARGET.RA"+ra+"\n");
+	ntm.write("100 POINTING.TARGET.DEC"+dec+"\n");
+	ntm.write("100 POINTING.TARGET.RA_V=0\n");
+	ntm.write("100 POINTING.TARGET.DEC_V=0\n");
+	ntm.write("100 POINTING.TRACK=386\n");
+}
+
+export.StartTrack(){
+	ntmAnwser = "";
+	ntm.write("100 POINTING.TRACK=386\n");
+}
+
+export.StopTrack()
+{
+	ntmAnwser = "";
+	ntm.write("100 POINTING.TRACK=0\n");
+}
+export.clearError() {
+	ntmAnwser = "";
+	ntm.write("100 SET CABINET.STATUS.CLER=1\n");
+
+}
+
+
+
+exports.getNTMStatus = function () {
 
 	
 	console.log ("get telescope status");
@@ -39,7 +81,7 @@ getNTMStatus = function () {
 
 }
 
-NTMConnect = function () {
+exports.NTMConnect = function () {
 
  ntm = net.connect(65432,'192.168.200.195', function(){
    ntm.on('data', function(data) {
@@ -67,14 +109,14 @@ NTMConnect = function () {
   ntm.write('01 SET SERVER.CONNECTION.EVENTMASK=0\n');
 });
 }
-NTMDisconnect = function() {
+exports.NTMDisconnect = function() {
 	ntm.end('DISCONNECT');
 	clearInterval(statusId);
 }
 
 
-NTMConnect();
-var statusId=setInterval(getNTMStatus,2000);
-setTimeout(NTMDisconnect,20000);
+exports.NTMConnect();
+var statusId=setInterval(exports.getNTMStatus,2000);
+setTimeout(exports.NTMDisconnect,20000);
 
 
