@@ -31,6 +31,7 @@ exports.getStatus = function (callback) {
 	var body ="";
 	var req = http.request(options, function(res) {
 	  res.setEncoding('utf8');
+
 	  res.on('response', function (chunk) {
 		body += chunk;
 		});
@@ -40,17 +41,17 @@ exports.getStatus = function (callback) {
 		//console.log("ToitStatus="+statusTable[ToitStatus.CurrentState]);
 	  });
    });
-  
-	req.end();
+  req.on('error',function(err){
+	   req.abort();
+	   callback( err);
+	   });
+  req.end();
 }
 
 
   function HandelRoof(action) {
-
-
  	var post_data = querystring.stringify({
       		'action' : action,
-      
   	});
 	var options = {
 	  host: '192.168.200.177',
@@ -76,19 +77,18 @@ exports.Open = function(action,callback) {
 	function isRoofOpen(callback) {
 	exports.getStatus(function(err,result){
 		if (err) 
-			throw err
+			callback (err); 
 		else 
 			if ( (action == "OuvertureA" && result != "Toit aeration") || 
-				 ( (action == "OuvertureP" ||  action == "OuvertureT" )&& result != "Toit ouvert")) {
-				callback (new Error("Error occur in opening roof : ROOF IS NOT OPEN!")); 
+				 ( (action == "OuvertureP" ||  action == "OuvertureT" )&& result != "Toit ouvert")) {		
 			}
 	});
 	}
 						
-	setTimeout(isRoofOpen , 60000,callback);
+	setTimeout(isRoofOpen , 80000,callback);
 	exports.getStatus(function(err,result){
 		if (err) 
-			console.log("Error occur"+err);
+			callback (err); 
 		else {
 			if (result != "Toit ouvert")
 				HandelRoof(action);
@@ -108,10 +108,10 @@ exports.Close = function(callback) {
 			}
 	});
 	}
-	setTimeout(isRoofClosed , 60000,callback);	
+	setTimeout(isRoofClosed , 80000,callback);	
 	exports.getStatus(function(err,result){
 		if (err) 
-			console.log("Error occur"+err);
+			callback(err);
 		else {
 			if (result != "Toit ferme")
 				HandelRoof("Fermeture");

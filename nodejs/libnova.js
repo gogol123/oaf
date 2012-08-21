@@ -58,17 +58,4 @@ var options = {
 	ImagePath	 : "C:/Users/philippe/tmp",
 };
 
-function repeater(i) {
-	if (i < 5) {
-		options.ImageIndex = i
-		ccd.CCDExpose(options,function (err,result) {
-			if (err)
-			console.log("Error occur :"+err);
-			else {
-				console.log("Image :"+i+" done :",result);
-				repeater(i+1);
-			}
-		});
-	}
-}
-repeater(0);
+
