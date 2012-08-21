@@ -1,6 +1,5 @@
 var http = require('http');
 var querystring = require('querystring');
-var toit = require('./toit.js');
 
 
 function getMeteo() {
@@ -11,13 +10,12 @@ function getMeteo() {
 	var meteoObject ;
 	var body ="";
 	var req = http.request(options, function(res) {
-	  res.setEncoding('utf8');
 	  res.on('data', function (chunk) {
 		body += chunk;
 		});
 	  res.on('end',function() {
 		meteoObject = JSON.parse(body);
-		console.log('skytemp='+meteoObject.cloudsensor.SkyTemp);
+		console.log(meteoObject.cloudsensor);
 	  });
 	});
 	req.end();
@@ -32,13 +30,6 @@ function getTime() {
 
 
 
-//setInterval(getMeteo,10000);
+setInterval(getMeteo,5000);
 //setInterval(getTime,5000);
 
-//fermeture
-//ouvertureA
-//ouvertureP
-//ouvertureT
-//manageToit("fermeture");
-
-console.log(toit.getToitStatus());

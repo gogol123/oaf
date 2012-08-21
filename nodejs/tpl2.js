@@ -15,7 +15,7 @@ var HAMotionPattern = new RegExp	("10 DATA INLINE HA.MOTION_STATE=([0-9]*)","m")
 var DECMotionPattern = new RegExp	("10 DATA INLINE DEC.MOTION_STATE=([0-9]*)","m");
 
 var ntmAnwser = "";
-
+var StatusCallback;
 
 var TelescopStatus = {
 	Power : 0,
@@ -74,13 +74,14 @@ exports.clearError = function(){
 
 
 
-exports.getNTMStatus = function () {
+exports.getNTMStatus = function (callback) {
 
 	
 	console.log ("get telescope status");
 	ntmAnwser = "";
+	StatusCallback=callback;
 	ntm.write('10 GET CABINET.POWER_STATE;CABINET.REFERENCED;CABINET.STATUS.GLOBAL;POINTING.TRACK;HA.CURRPOS;HA.MOTION_STATE;DEC.CURRPOS;DEC.TARGETPOS;DEC.MOTION_STATE\n');
-		
+	
 
 }
 
@@ -99,7 +100,8 @@ exports.NTMConnect = function () {
 	 TelescopStatus.Track= parseInt(ntmAnwser.match(TrackPattern)[1]);
 	 TelescopStatus.HAMotionstate= parseInt(ntmAnwser.match(HAMotionPattern)[1]);
 	 TelescopStatus.DECMotionstate= parseInt(ntmAnwser.match(DECMotionPattern)[1]);
-	 console.log(TelescopStatus);
+	 if (StatusCallback)
+		StatusCallback(null,TelescopStatus);
 	 ntmAnwser = "";
 	 }
    });
@@ -118,5 +120,23 @@ exports.NTMDisconnect = function() {
 }
 
 
+exports.hms_to_deg = function( heq ) {
+	var  angle;
+	angle = (heq.h / 24) * 360;
+    angle += (heq.mn / 60) * 15;
+	angle +=(heq.s / 60)*.25;
+	return angle ;
+}
+	
+exports.dms_to_deg = function( heq ) {
+	var  angle;
+	angle = Math.abs( heq.d );
+    angle += Math.abs(heq.mn / 60);
+	angle +=Math.abs(heq.s / 3600);
+	
+	if (heq.h < 0)
+		angle = angle*-1.0;
 
+	return angle ;
+}
 

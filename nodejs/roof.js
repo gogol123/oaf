@@ -30,23 +30,20 @@ exports.getStatus = function (callback) {
 	var ToitStatus ;
 	var body ="";
 	var req = http.request(options, function(res) {
-	  res.setEncoding('utf8');
-
-	  res.on('response', function (chunk) {
+	  res.on('data', function (chunk) {
 		body += chunk;
 		});
 	  res.on('end',function() {
 		ToitStatus = JSON.parse(body);
 		callback(null,statusTable[ToitStatus.CurrentState]);
-		//console.log("ToitStatus="+statusTable[ToitStatus.CurrentState]);
 	  });
    });
-  req.on('error',function(err){
-	   req.abort();
-	   callback( err);
-	   });
+	req.on('error',function(err){
+		callback( err);
+   });
   req.end();
 }
+
 
 
   function HandelRoof(action) {
@@ -81,7 +78,11 @@ exports.Open = function(action,callback) {
 		else 
 			if ( (action == "OuvertureA" && result != "Toit aeration") || 
 				 ( (action == "OuvertureP" ||  action == "OuvertureT" )&& result != "Toit ouvert")) {		
+				callback (new Error("Error occur in opening roof : ROOF IS NOT OPEN!"));
 			}
+			else
+				callback(null,"Roof Open");
+			
 	});
 	}
 						
@@ -99,13 +100,15 @@ exports.Open = function(action,callback) {
 
 exports.Close = function(callback) {
 	function isRoofClosed(callback) {
-	exports.Status(function(err,result){
+	exports.getStatus(function(err,result){
 		if (err) 
 			throw err
 		else 
 			if ( result != "Toit ferme") {
 				callback (new Error("Error occur in opening roof : ROOF IS NOT CLOSED!")); 
 			}
+			else
+				callback(null,"Roof close");
 	});
 	}
 	setTimeout(isRoofClosed , 80000,callback);	
@@ -117,6 +120,27 @@ exports.Close = function(callback) {
 				HandelRoof("Fermeture");
 		}			
 	});
+}
+
+
+
+exports.getMeteo = function (callback) {
+	var options = {
+	  host: '192.168.200.178',
+	  path: '/jsonSensor',
+	};
+	var meteoObject ;
+	var body ="";
+	var req = http.request(options, function(res) {
+	  res.on('data', function (chunk) {
+		body += chunk;
+		});
+	  res.on('end',function() {
+		meteoObject = JSON.parse(body);
+		callback(null,meteoObject.cloudsensor);
+	  });
+	});
+	req.end();
 }
 
 
