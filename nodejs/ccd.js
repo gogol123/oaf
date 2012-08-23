@@ -15,8 +15,8 @@ exports.Expose = function (options,callback) {
 			fs.mkdirSync(dayPath);
 		options.ImagePath = dayPath;
 	}
-	if (options.Repeate)
-		nbImage = options.Repeate;
+	if (options.index)
+		nbImage = options.index;
 	else
 		nbImage=1;
 	
@@ -33,7 +33,7 @@ function repeater(i,callback) {
 		});
 	}
 	else
-		callback(null);
+		callback(null,"Image:"+"done");
 }
 repeater(0,callback);
 }

@@ -1,5 +1,5 @@
 var net = require('net');
-
+var util =require('./util.js');
 var Location = require("./maximjs").Location;
 
 var ntm;
@@ -69,6 +69,7 @@ exports.powerOff = function(callback){
 
 function parkCallback() {
 	function isPark(err,result) {
+		console.log("IsPark");
 		if(err)
 			setCallback(err);
 		else
@@ -92,7 +93,7 @@ exports.park = function(callback){
 
 
 function isTrack(err,result) {	
-				setCallback(null);
+		setCallback(null);
 	}
 	
 
@@ -101,29 +102,15 @@ exports.slew = function(ra,dec,location,callback) {
 
 	//decode ra and dec
 	
-	var pattern = new RegExp("([0-9]*)[h,d]([0-9]*)m([0-9]*)s?");
-	var resultRa = ra.match(pattern);
-	var resultDec = dec.match(pattern);
+	var R = ra.decodeRa();
+	var D = dec.decodeDec();
 	
-	target = {
-		ra : {
-			h : resultRa[1],
-			mn : resultRa[2],
-			s : resultRa[3],
-			},
-		dec : {
-			d : resultDec[1],
-			mn :resultDec[2],
-			s :resultDec[3],
-		}
-	}
-	
-	var hz = location.EqtoHz(exports.hms_to_deg(target.ra),exports.dms_to_deg(target.dec));
+	var hz = location.EqtoHz(util.hms_to_deg(R),util.dms_to_deg(D));
 
 	if (hz.alt < 5.0) 
 		callback (new Error("Error occur in slewing telescope : object is below (deg!"));
-	r =exports.hms_to_hdec(target.ra);
-	d=exports.dms_to_deg(target.dec)
+	r=util.hms_to_hdec(R);
+	d=util.dms_to_deg(D)
 	console.log("Slewing to :"+r+" : "+d);
 	ntmAnwser = "";
 
@@ -132,7 +119,7 @@ exports.slew = function(ra,dec,location,callback) {
 	ntm.write("400 SET POINTING.TARGET.RA_V=0.0\n");
 	ntm.write("400 SET POINTING.TARGET.DEC_V=0.0\n");
 	ntm.write("400 SET POINTING.TRACK=386\n");
-	
+
 	setTimeout(exports.getNTMStatus,20000,isTrack);
 	setCallback= callback;
 }
@@ -207,31 +194,3 @@ exports.NTMDisconnect = function() {
 }
 
 
-exports.hms_to_deg = function( heq ) {
-	var  angle;
-	angle = (heq.h / 24) * 360;
-    angle += (heq.mn / 60) * 15;
-	angle +=(heq.s / 60)*.25;
-	return angle ;
-}
-	
-exports.dms_to_deg = function( heq ) {
-	var  angle=0.0;
-	angle = Math.abs( heq.d );
-    angle += Math.abs(heq.mn / 60);
-	angle +=Math.abs(heq.s / 3600);
-	
-	if (heq.h < 0)
-		angle = angle*-1.0;
-
-	return angle ;
-}
-
-exports.hms_to_hdec = function( heq ) {
-	var  angle=0.0;
-	angle = Math.abs(heq.h) ;
-    angle = angle +(heq.mn / 60.);
-	angle = angle+(heq.s / 3600.);
-
-	return angle ;
-}
