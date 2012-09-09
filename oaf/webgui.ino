@@ -107,8 +107,9 @@ void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tai
       if (strcasecmp(value,"park")==0 ){
             tpl2Park();
       }
-      if (strcasecmp(value,"unpark")==0 ){
- //             UnPark();
+      if (strcasecmp(value,"reset")==0 ){
+            LogOnInternet(1,"reset_from_web","system");
+            delay(5000);
       }
        if (strcasecmp(value,"ToitFermeture")==0 ){
             UserAction =ActionFermeture;
