@@ -151,7 +151,7 @@ static uint8_t mac[6] = { 0x02, 0xAA, 0xBB, 0xCC, 0x00, 0x22 };
 IPAddress localIp (192, 168, 200, 177 );
 IPAddress dnsIP ( 192,168,200, 1 );                      //live box
 
-IPAddress OAFServer (192,168,200,80);
+IPAddress OAFServer (192,168,200,82);
 IPAddress MeteoArduino (192,168,200,178);
 IPAddress ntm(192,168,200,195); 
 
