@@ -195,8 +195,7 @@ void setup()
   // setup the Ehternet library to talk to the Wiznet board
   Ethernet.begin(mac, localIp,dnsIP);
   
-  W5100.setRetransmissionTime(0x07D0);
-  W5100.setRetransmissionCount(3);
+
   
   InitLog();
   
@@ -218,9 +217,10 @@ void setup()
   watchdogSetup();
   LogOnInternet(1,"reboot_arduino","system");
 
-
+  W5100.setRetransmissionTime(0x07D0);
+  W5100.setRetransmissionCount(3);
 }
-
+boolean notInit=true;
 
 void loop()
 {
@@ -229,7 +229,12 @@ void loop()
    wdt_reset();   //pat the dog :)
   webserver.processConnection();
   
-  
+  if (notInit && (millis()>30000)) { //Init after 30s
+    TelescopeTpl2Connected= tpl2Connect(ntm);
+    InitLog();
+    LogOnInternet(1,"reboot_arduino","system");
+    notInit = false;
+  }
 
 
   CapteurToitOuvert = false ;

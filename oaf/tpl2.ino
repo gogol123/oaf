@@ -154,12 +154,16 @@ void tpl2Park(void) {
 }
 
 boolean tpl2Connect(IPAddress server) {
+    long timerConnection = millis();
     Serial.print("connecting to");
      Serial.println(server);
 
     if (clientNtm.connect(server, 65432)) {
         delay (300);
-        Serial.println("connected");
+        Serial.print("connected in :");
+        Serial.print(millis()-timerConnection);
+        Serial.println(" ms");
+
         while(clientNtm.available()) {
            char c = clientNtm.read();
             Serial.print(c);
@@ -174,7 +178,11 @@ boolean tpl2Connect(IPAddress server) {
       return true;
     }
     else {
-      Serial.println("connection failed");
+      Serial.print("connection failed");
+      Serial.print(millis()-timerConnection);
+      Serial.println(" ms");
+      clientNtm.stop();
+      clientNtm.flush();
       return false;
     }
 }

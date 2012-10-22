@@ -42,6 +42,8 @@ boolean GetMeteoSensor(){
   
   timerMeteo = millis();
   
+  W5100.setRetransmissionTime(0x0DAC);
+  W5100.setRetransmissionCount(2);
 
   if (client_Meteo.connect(MeteoArduino, 80)) {
     // Make a HTTP request:
@@ -54,6 +56,8 @@ boolean GetMeteoSensor(){
 #if DEBUG >1
     Serial.println("connectionfailed to MeteoArduino");
 #endif
+    W5100.setRetransmissionTime(0x07D0);
+    W5100.setRetransmissionCount(3);
     return false;
   }
   delay(50);
@@ -92,6 +96,9 @@ boolean GetMeteoSensor(){
 #endif
     client_Meteo.stop();
 }
+
+    W5100.setRetransmissionTime(0x07D0);
+    W5100.setRetransmissionCount(3);
     return true;
 
 }

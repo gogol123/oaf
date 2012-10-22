@@ -122,6 +122,9 @@ void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tai
         if (strcasecmp(value,"PowerOff")==0 ){
             tpl2Power(0);
           }
+         if (strcasecmp(value,"reset")==0 ){
+            delay (10000); //wtachdog will reset 
+          }
      }
    }
   }
