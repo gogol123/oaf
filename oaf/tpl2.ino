@@ -19,7 +19,7 @@ char tpl2Anwser[60];
 // telecope park position
 
 float ParkHA = 0.0;
-float ParkDec = -41.0;
+float ParkDec = -42.0;
 
 long ParkTimer;
 boolean isParking = false;
@@ -141,7 +141,7 @@ void tpl2Park(void) {
     ParkTimer = millis();
 
     clientNtm.println("40 SET HA.TARGETPOS=0.0");
-    clientNtm.println("41 SET DEC.TARGETPOS=-41.0");
+    clientNtm.println("41 SET DEC.TARGETPOS=-42.0");
 
     delay(200);
     while(clientNtm.available()) {
