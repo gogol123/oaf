@@ -126,22 +126,29 @@ boolean CapteurTympanOuvert = false;
 boolean CapteurTympanFermer = false; 
 boolean CapteurTympanIntermediaire=false;
 boolean CapteurTelescope = false; 
+boolean CapteurCoverOuvert = false;
+boolean CapteurCoverFermer = false;
 
 //sorties
 
-byte relaisOuvertureToit=2; //Pin D2 COM1
-byte relaisFermetureToit=3;//Pin D3 COM2
-byte relaisOuvertureTympan=4; //Pin D4 COM3
-byte relaisFermetureTympan=5; //Pin D5 COM4
+byte relaisOuvertureToit=22; 
+byte relaisFermetureToit=23;
+byte relaisOuvertureTympan=24; 
+byte relaisFermetureTympan=25; 
 byte sortieEmetteurHomeEasy = 9;
+
+byte relaisOuvertureCover = 26;
+byte relaisFermetureCover = 27;
 
 
 //entrees
-byte EntreeCapteurToitOuvert = 30; 
-byte EntreeCapteurToitFermer = 28; 
-byte EntreeCapteurTympanOuvert =24; 
-byte EntreeCapteurTympanFermer =22; 
-byte EntreeCapteurTympanIntermediaire =26; 
+byte EntreeCapteurToitOuvert = 39; 
+byte EntreeCapteurToitFermer = 38; 
+byte EntreeCapteurTympanOuvert =42; 
+byte EntreeCapteurTympanFermer =40; 
+byte EntreeCapteurTympanIntermediaire =41; 
+byte EntreeCapteurCoverOuvert = 43;
+byte EntreeCapteurCoverFermer = 44;
 
 byte EntreeBoutonOuverture = 51;
 byte EntreeBoutonFermeture =53 ;
@@ -179,13 +186,19 @@ void setup()
   pinMode(relaisOuvertureTympan,OUTPUT);
   pinMode(relaisFermetureTympan,OUTPUT);
   pinMode(sortieEmetteurHomeEasy,OUTPUT);
-    
+   
+  pinMode(relaisOuvertureCover,OUTPUT);
+  pinMode(relaisFermetureCover,OUTPUT);
+
   pinMode(EntreeCapteurToitOuvert,INPUT_PULLUP);
   pinMode(EntreeCapteurToitFermer,INPUT_PULLUP);
   pinMode(EntreeCapteurTympanOuvert,INPUT_PULLUP);
   pinMode(EntreeCapteurTympanFermer,INPUT_PULLUP);
   pinMode(EntreeCapteurTympanIntermediaire,INPUT_PULLUP);
   
+  pinMode(EntreeCapteurCoverOuvert,INPUT_PULLUP);
+  pinMode(EntreeCapteurCoverFermer,INPUT_PULLUP);
+
   
   pinMode(EntreeBoutonOuverture,INPUT_PULLUP);
   pinMode(EntreeBoutonFermeture,INPUT_PULLUP);
@@ -229,7 +242,7 @@ void loop()
    wdt_reset();   //pat the dog :)
   webserver.processConnection();
   
-  if (notInit && (millis()>30000)) { //Init after 30s
+  if (notInit && (millis()>30000) && !TelescopeTpl2Connected) { //Init after 30s
     TelescopeTpl2Connected= tpl2Connect(ntm);
     InitLog();
     LogOnInternet(1,"reboot_arduino","system");
@@ -267,6 +280,20 @@ void loop()
     delay(100);
     if (!digitalRead(EntreeCapteurTympanIntermediaire))
        CapteurTympanIntermediaire = true;
+  }  
+  
+  CapteurCoverOuvert = false;
+  if (!digitalRead(EntreeCapteurCoverOuvert)){
+    delay(100);
+    if (!digitalRead(EntreeCapteurCoverOuvert))
+       CapteurCoverOuvert = true;
+  }  
+  
+   CapteurCoverFermer = false;
+  if (!digitalRead(EntreeCapteurCoverFermer)){
+    delay(100);
+    if (!digitalRead(EntreeCapteurCoverFermer))
+       CapteurCoverFermer = true;
   }  
   
   if (!digitalRead(EntreeBoutonOuverture)){
@@ -317,6 +344,11 @@ void loop()
     digitalWrite(relaisFermetureToit,LOW);
   if (CapteurToitOuvert)
     digitalWrite(relaisOuvertureToit,LOW);
+    
+  if(CapteurCoverOuvert || CapteurCoverFermer){
+    digitalWrite(relaisFermetureCover,LOW);
+    digitalWrite(relaisOuvertureCover,LOW);
+  }
   
 
   if (TelescopeTpl2Connected) {

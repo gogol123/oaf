@@ -1,7 +1,6 @@
 
 void JsonGetCapteur(WebServer &server, WebServer::ConnectionType type, char *, bool)
 {
-  
  if (type == WebServer::POST)
   {
     server.httpFail();
@@ -18,6 +17,8 @@ void JsonGetCapteur(WebServer &server, WebServer::ConnectionType type, char *, b
   server << " \"TympanOuvert\" : \"" << CapteurTympanOuvert << "\",\n"; 
   server << " \"TympanFerme\" : \"" << CapteurTympanFermer << "\",\n"; 
   server << " \"TympanIntermediaire\" : \"" << CapteurTympanIntermediaire << "\",\n"; 
+  server << " \"CoverOuvert\" : \"" << CapteurCoverOuvert << "\",\n"; 
+  server << " \"CoverFerme\" : \"" << CapteurCoverFermer << "\",\n"; 
   server << " \"Telescope\" : \"" << CapteurTelescope << "\",\n"; 
   server << " \"UserAction\" : \"" << UserAction << "\",\n"; 
   server << " \"CurrentState\" : \"" << CurrentState << "\",\n"; 
@@ -28,7 +29,6 @@ void JsonGetCapteur(WebServer &server, WebServer::ConnectionType type, char *, b
   server << " \"TelescopeTpl2Connected\" : \"" << TelescopeTpl2Connected << "\"\n"; 
 
   server << "} \n ";
-
 }
 
 
@@ -204,17 +204,18 @@ void HtmlFermetureAuto(WebServer &server, WebServer::ConnectionType type, char *
 void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 {
    wdt_reset();   //pat the dog :)
-
+   
   if (type == WebServer::POST) {
     bool repeat;
-    char name[16], value[16];
+    char name[32], value[32];
+    delay(150);
     do
     {
       /* readPOSTparam returns false when there are no more parameters
        * to read from the input.  We pass in buffers for it to store
        * the name and value strings along with the length of those
        * buffers. */
-      repeat = server.readPOSTparam(name, 16, value, 16);
+      repeat = server.readPOSTparam(name, 32, value, 32);
       if (strcasecmp(name,"action") ==0) {
           if (strcasecmp(value,"lumiereOff")==0) {
               transmitHomeEasy(false,0); // 0 adress de la lampe
@@ -272,6 +273,16 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
          if (strcasecmp(value,"park") ==0  ){
               tpl2Park();     
           }
+                    
+          if (strcasecmp(value,"CoverOpen")==0 ){
+            Serial.println("open dust cover");
+            OpenCover();
+          }
+          
+         if (strcasecmp(value,"CoverClose")==0 ){
+            Serial.println("close dust cover");
+            CloseCover();
+          }
          
           if (strcasecmp(value,"unpark") ==0  ){
     //          UnPark();
@@ -282,11 +293,13 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
         }  
     } while (repeat);
     
-
+    Serial << " End post \n";
     // after procesing the POST data, tell the web browser to reload
     // the page using a GET method. 
-    server.httpSeeOther(PREFIX);
-  
+   // server.httpSeeOther(PREFIX);
+     server.httpSuccess();
+     server.println(value);
+
 
     return;
   }
@@ -308,6 +321,7 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 "  <style type='text/css'>"
 "  	#schema {width:340px;height:200px;background-color:#BDBDBD; }"
 "  	#moteur {width:340px;height:50px;background-color:#BDBDBD; }"
+"  	#dustSchema {width:340px;height:50px;background-color:#BDBDBD; }"
 "  	.capteur, .etatMoteur { width:30px;height:30px;opacity:0.6;background-color:#6E6E6E; }"
 "	.textClass { width:60px;height:30px;font-size:150%; }"
 "	#statusLabel { width:160px; font-weight:bold}"
@@ -327,7 +341,8 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 "	            $('#OuvertureTympan').css('background-color',((data.OuvertureTympan==1)?'red':'#6E6E6E'));"
 "	            $('#FermetureTympan').css('background-color',((data.FermetureTympan==1)?'red':'#6E6E6E'));"
 "	            $('#OuvertureToit').css('background-color',((data.OuvertureToit==1)?'red':'#6E6E6E'));"
-"	            $('#FermetureToit').css('background-color',((data.FermetureToit==1)?'red':'#6E6E6E'));"
+"	            $('#CoverOuvert').css('background-color',((data.CoverOuvert==1)?'green':'#6E6E6E'));"
+"	            $('#CoverFerme').css('background-color',((data.CoverFerme==1)?'green':'#6E6E6E'));"
 "                   $('#statusLabel').text(statusTable[data.CurrentState]);"
 ;
 P(message1)=
@@ -362,7 +377,7 @@ P(message2)=
 "  $(document).ready(function() {"
 "    $('#tabs').tabs();"
 "    $('button').button();"
-"	$( '#lumiere,#PC1,#PC2').buttonset();"
+"	$( '#lumiere,#PC1,#PC2,#dust').buttonset();"
 "	$('#ToitFerme').position({my:'left top',at:'left top',of:'#schema'});"
 "	$('#ToitOuvert').position({my:'right top',at:'right top',of:'#schema'});"
 "	$('#TympanOuvert').position({my:'left bottom',at:'left bottom',of:'#schema'});"
@@ -377,11 +392,13 @@ P(message2)=
 "	$('#FermetureTympan').position({my:'left',at :'left ',offset:'60 0',of :'#moteur'});"
 "	$('#OuvertureToit').position({my:'right',at :'right ',offset:'-60 0',of :'#moteur'});"
 "	$('#FermetureToit').position({my:'right',at :'right ',of :'#moteur'});"  
+"	$('#CoverOuvert').position({my:'left',at :'left ',of :'#dustSchema'});"  
+"	$('#CoverFerme').position({my:'right',at :'right ',of :'#dustSchema'});"  
 "       if ($('#FermetureAuto').is(':checked'))"
 "         $('#tableau').show();"
 "       else"
 "         $('#tableau').hide();"
-"	$('button,#PC1On,#PC1Off,#PC2On,#PC2Off,#lumiereOff,#lumiereOn,#park,#unpark' ).click(function() {	"
+"	$('button,#PC1On,#PC1Off,#PC2On,#PC2Off,#lumiereOff,#lumiereOn,#park,#unpark,#CoverOpen,#CoverClose' ).click(function() {	"
 "		var id = $(this).attr('id'); "
 "		$.post('/', { action: id } );"
 "	});"
@@ -435,6 +452,15 @@ P(message3) =
 "		<button id= 'ouvertureA'> Ouverture aeration</button>"
 "		<br><button id='fermeture'> Fermeture</button>"
 "		<button id='stop'> Stop!</button>"
+"    	        <div><br><br><b>Dust cover</b></div>"
+"    	          <div id = 'dustSchema'>"
+"    		    <div class = 'etatMoteur' id ='CoverOuvert'> Ouv.</div>"
+"    		    <div class = 'etatMoteur' id ='CoverFerme'> Ferm.</div>"
+"                 </div>"
+"		<div id='dust'> "
+"		  <input type='radio' name = 'dustCover' id='CoverOpen'  /><label for='CoverOpen'>Ouverture</label>"
+"		<input type='radio' name = 'dustCover' id='CoverClose' checked='checked' /><label for='CoverClose'>Fermeture</label>"
+"         </div>"
 "    </div>";
 P(message4)=
 "    <div id='fragment-3'>"
@@ -551,5 +577,7 @@ else
     /* send a 401 error back causing the web browser to prompt the user for credentials */
     server.httpUnauthorized();
   }
+  
+  Serial << "HTMLCMD End \n";
 }
 
