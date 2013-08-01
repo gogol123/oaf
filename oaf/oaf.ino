@@ -358,11 +358,13 @@ void loop()
   if (CapteurToitOuvert)
     digitalWrite(relaisOuvertureToit,HIGH);
     
-  if(CapteurCoverOuvert || CapteurCoverFermer){
-    digitalWrite(relaisFermetureCover,HIGH);
+  if (CapteurCoverOuvert ) {
     digitalWrite(relaisOuvertureCover,HIGH);
   }
-  
+
+  if ( CapteurCoverFermer) {
+    digitalWrite(relaisFermetureCover,HIGH);
+  }
 
   if (TelescopeTpl2Connected) {
     if (millis() -starTimerTelescopeStatus > 2000 ){ // check telescope status every 2s

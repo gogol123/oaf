@@ -114,6 +114,7 @@ void ManageToit(){
             MoteurFermetureTympanOff();
             MoteurOuvertureToitOff();
             MoteurOuvertureTympanOff();
+          //  StopCover();
  #if DEBUG > 2
         Serial << "Arret d'urgence \n";
  #endif
