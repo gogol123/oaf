@@ -17,29 +17,29 @@ void HtmlAdminCmd(WebServer &server, WebServer::ConnectionType type, char *url, 
       if (strcasecmp(name,"actionManu") ==0) {
           if (strcasecmp(value,"TympanOuverture")==0) {
               Serial << "Ouverture Manuel Tympan \n";
-              digitalWrite(relaisOuvertureTympan,HIGH);
-              delay(1000);
               digitalWrite(relaisOuvertureTympan,LOW);
+              delay(1000);
+              digitalWrite(relaisOuvertureTympan,HIGH);
           }
           if (strcasecmp(value,"TympanFermeture")==0 ){
               Serial << "Fermeture Manuel Tympan \n";
-              digitalWrite(relaisFermetureTympan,HIGH);
-              delay(1000);
               digitalWrite(relaisFermetureTympan,LOW);
+              delay(1000);
+              digitalWrite(relaisFermetureTympan,HIGH);
  
           }
           if (strcasecmp(value,"ToitOuverture")==0){
               Serial << "Ouverture Manuel Toit \n";
-              digitalWrite(relaisOuvertureToit,HIGH);
-              delay(1000);
               digitalWrite(relaisOuvertureToit,LOW);
+              delay(1000);
+              digitalWrite(relaisOuvertureToit,HIGH);
  
           }
           if (strcasecmp(value,"ToitFermeture")==0 ){
               Serial << "Fermeture Manuel Toit \n";
-               digitalWrite(relaisFermetureToit,HIGH);
+               digitalWrite(relaisFermetureToit,LOW);
               delay(1000);
-              digitalWrite(relaisFermetureToit,LOW);
+              digitalWrite(relaisFermetureToit,HIGH);
  
           }
           if (strcasecmp(value,"Fermeture")==0 ){

@@ -22,10 +22,10 @@ void JsonGetCapteur(WebServer &server, WebServer::ConnectionType type, char *, b
   server << " \"Telescope\" : \"" << CapteurTelescope << "\",\n"; 
   server << " \"UserAction\" : \"" << UserAction << "\",\n"; 
   server << " \"CurrentState\" : \"" << CurrentState << "\",\n"; 
-  server << " \"OuvertureTympan\" : \"" << digitalRead(relaisOuvertureTympan) << "\",\n"; 
-  server << " \"FermetureTympan\" : \"" << digitalRead(relaisFermetureTympan) << "\",\n"; 
-  server << " \"OuvertureToit\" : \"" << digitalRead(relaisOuvertureToit) << "\",\n"; 
-  server << " \"FermetureToit\" : \"" << digitalRead(relaisFermetureToit) << "\",\n"; 
+  server << " \"OuvertureTympan\" : \"" << !digitalRead(relaisOuvertureTympan) << "\",\n"; 
+  server << " \"FermetureTympan\" : \"" << !digitalRead(relaisFermetureTympan) << "\",\n"; 
+  server << " \"OuvertureToit\" : \"" << !digitalRead(relaisOuvertureToit) << "\",\n"; 
+  server << " \"FermetureToit\" : \"" << !digitalRead(relaisFermetureToit) << "\",\n"; 
   server << " \"TelescopeTpl2Connected\" : \"" << TelescopeTpl2Connected << "\"\n"; 
 
   server << "} \n ";
@@ -95,14 +95,10 @@ void setlumiere(WebServer &server, WebServer::ConnectionType type, char *url_tai
         ;
      else {
       if (strcasecmp(value,"lumiereOn") ==0){
-            transmitHomeEasy(true,0); // 0 adress de la lampe
-              delay(10);
-              transmitHomeEasy(true,0); // 0 adress de la lampe
+             digitalWrite(sortieLumiere, LOW);
       }
       if (strcasecmp(value,"lumiereOff") ==0){
-        transmitHomeEasy(false,0); // 0 adress de la lampe
-              delay(10);
-              transmitHomeEasy(false,0); // 0 adress de la lampe
+             digitalWrite(sortieLumiere, HIGH);
       }
       if (strcasecmp(value,"park")==0 ){
             tpl2Park();
@@ -218,14 +214,12 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
       repeat = server.readPOSTparam(name, 32, value, 32);
       if (strcasecmp(name,"action") ==0) {
           if (strcasecmp(value,"lumiereOff")==0) {
-              transmitHomeEasy(false,0); // 0 adress de la lampe
-              delay(10);
-              transmitHomeEasy(false,0); // 0 adress de la lampe
+             digitalWrite(sortieLumiere, HIGH);
+  
           }
           if (strcasecmp(value,"lumiereOn")==0 ){
-              transmitHomeEasy(true,0); // 0 adress de la lampe
-              delay(10);
-              transmitHomeEasy(true,0); // 0 adress de la lampe
+             digitalWrite(sortieLumiere, LOW);
+
           }
           if (strcasecmp(value,"PC1Off")==0){
               transmitHomeEasy(false,1); // 1 adress de PC1
@@ -341,6 +335,7 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 "	            $('#OuvertureTympan').css('background-color',((data.OuvertureTympan==1)?'red':'#6E6E6E'));"
 "	            $('#FermetureTympan').css('background-color',((data.FermetureTympan==1)?'red':'#6E6E6E'));"
 "	            $('#OuvertureToit').css('background-color',((data.OuvertureToit==1)?'red':'#6E6E6E'));"
+"	            $('#FermetureToit').css('background-color',((data.FermetureToit==1)?'red':'#6E6E6E'));"
 "	            $('#CoverOuvert').css('background-color',((data.CoverOuvert==1)?'green':'#6E6E6E'));"
 "	            $('#CoverFerme').css('background-color',((data.CoverFerme==1)?'green':'#6E6E6E'));"
 "                   $('#statusLabel').text(statusTable[data.CurrentState]);"

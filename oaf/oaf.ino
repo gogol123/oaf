@@ -137,6 +137,8 @@ byte relaisOuvertureTympan=24;
 byte relaisFermetureTympan=25; 
 byte sortieEmetteurHomeEasy = 9;
 
+byte sortieLumiere = 29; //
+
 byte relaisOuvertureCover = 26;
 byte relaisFermetureCover = 27;
 
@@ -147,8 +149,8 @@ byte EntreeCapteurToitFermer = 38;
 byte EntreeCapteurTympanOuvert =42; 
 byte EntreeCapteurTympanFermer =40; 
 byte EntreeCapteurTympanIntermediaire =41; 
-byte EntreeCapteurCoverOuvert = 43;
-byte EntreeCapteurCoverFermer = 44;
+byte EntreeCapteurCoverOuvert = 44;
+byte EntreeCapteurCoverFermer = 43;
 
 byte EntreeBoutonOuverture = 51;
 byte EntreeBoutonFermeture =53 ;
@@ -187,8 +189,19 @@ void setup()
   pinMode(relaisFermetureTympan,OUTPUT);
   pinMode(sortieEmetteurHomeEasy,OUTPUT);
    
+  digitalWrite(relaisOuvertureToit,HIGH);
+  digitalWrite(relaisFermetureToit,HIGH);
+  digitalWrite(relaisOuvertureTympan,HIGH);
+  digitalWrite(relaisFermetureTympan,HIGH);
+
   pinMode(relaisOuvertureCover,OUTPUT);
   pinMode(relaisFermetureCover,OUTPUT);
+  
+  digitalWrite(relaisOuvertureCover,HIGH);
+  digitalWrite(relaisFermetureCover,HIGH);
+
+  pinMode(sortieLumiere,OUTPUT);
+  digitalWrite(sortieLumiere,HIGH);
 
   pinMode(EntreeCapteurToitOuvert,INPUT_PULLUP);
   pinMode(EntreeCapteurToitFermer,INPUT_PULLUP);
@@ -337,17 +350,17 @@ void loop()
   //Secutite
   
   if (CapteurTympanFermer)
-    digitalWrite(relaisFermetureTympan,LOW);
+    digitalWrite(relaisFermetureTympan,HIGH);
   if (CapteurTympanOuvert)
-    digitalWrite(relaisOuvertureTympan,LOW);
+    digitalWrite(relaisOuvertureTympan,HIGH);
   if (CapteurToitFermer)
-    digitalWrite(relaisFermetureToit,LOW);
+    digitalWrite(relaisFermetureToit,HIGH);
   if (CapteurToitOuvert)
-    digitalWrite(relaisOuvertureToit,LOW);
+    digitalWrite(relaisOuvertureToit,HIGH);
     
   if(CapteurCoverOuvert || CapteurCoverFermer){
-    digitalWrite(relaisFermetureCover,LOW);
-    digitalWrite(relaisOuvertureCover,LOW);
+    digitalWrite(relaisFermetureCover,HIGH);
+    digitalWrite(relaisOuvertureCover,HIGH);
   }
   
 

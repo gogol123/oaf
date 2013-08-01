@@ -173,8 +173,8 @@ long TimerTympanOuverture =0;
 long TimerTympanFermeture =0;
 
 void MoteurOuvertureToitOn(long  timer){
-  if (digitalRead(relaisOuvertureToit)==LOW) {
-      digitalWrite(relaisOuvertureToit,HIGH);
+  if (digitalRead(relaisOuvertureToit)==HIGH) {
+      digitalWrite(relaisOuvertureToit,LOW);
       TimerToitOuverture = millis();
   }
   if (millis()-TimerToitOuverture > timer*1000){ 
@@ -188,12 +188,12 @@ void MoteurOuvertureToitOn(long  timer){
 
 
 void MoteurOuvertureToitOff(){
-  digitalWrite(relaisOuvertureToit,LOW);
+  digitalWrite(relaisOuvertureToit,HIGH);
 }
 
 void MoteurFermetureToitOn(long  timer){
-  if (digitalRead(relaisFermetureToit)==LOW){
-      digitalWrite(relaisFermetureToit,HIGH);
+  if (digitalRead(relaisFermetureToit)==HIGH){
+      digitalWrite(relaisFermetureToit,LOW);
       TimerToitFermeture=millis();
   }
   if (millis()-TimerToitFermeture > timer*1000){
@@ -207,13 +207,13 @@ void MoteurFermetureToitOn(long  timer){
 
 
 void MoteurFermetureToitOff(){
-  digitalWrite(relaisFermetureToit,LOW);
+  digitalWrite(relaisFermetureToit,HIGH);
 }
 
 void MoteurOuvertureTympanOn(long  timer){
 
-  if (digitalRead(relaisOuvertureTympan)==LOW) {
-    digitalWrite(relaisOuvertureTympan,HIGH);
+  if (digitalRead(relaisOuvertureTympan)==HIGH) {
+    digitalWrite(relaisOuvertureTympan,LOW);
     TimerTympanOuverture=millis();
   }
   if ((millis()-TimerTympanOuverture) > (timer*1000)) {
@@ -227,12 +227,12 @@ void MoteurOuvertureTympanOn(long  timer){
 
 
 void MoteurOuvertureTympanOff(){
-  digitalWrite(relaisOuvertureTympan,LOW);
+  digitalWrite(relaisOuvertureTympan,HIGH);
 }
 
 void MoteurFermetureTympanOn(long  timer){
-  if (digitalRead(relaisFermetureTympan)==LOW) {
-    digitalWrite(relaisFermetureTympan,HIGH);
+  if (digitalRead(relaisFermetureTympan)==HIGH) {
+    digitalWrite(relaisFermetureTympan,LOW);
     TimerTympanFermeture=millis();
   }
   if (millis()-TimerTympanFermeture > timer*1000){
@@ -247,7 +247,7 @@ void MoteurFermetureTympanOn(long  timer){
 
 void MoteurFermetureTympanOff(){
 
-  digitalWrite(relaisFermetureTympan,LOW);
+  digitalWrite(relaisFermetureTympan,HIGH);
 }
 
 
