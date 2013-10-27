@@ -222,24 +222,16 @@ void HtmlCmd(WebServer &server, WebServer::ConnectionType type, char *url, bool)
 
           }
           if (strcasecmp(value,"PC1Off")==0){
-              transmitHomeEasy(false,1); // 1 adress de PC1
-              delay(10);
-              transmitHomeEasy(false,1); // 1 adress de PC1
+             digitalWrite(sortiePC1, HIGH);
           }
           if (strcasecmp(value,"PC1On")==0 ){
-              transmitHomeEasy(true,1); // 1 adress de la PC1
-              delay(10);
-               transmitHomeEasy(true,1); // 1 adress de la PC1
+              digitalWrite(sortiePC1, LOW);
           }
            if (strcasecmp(value,"PC2Off")==0){
-              transmitHomeEasy(false,2); // 0 adress de la PC2
-              delay(10);
-              transmitHomeEasy(false,2); // 0 adress de la PC2
+             digitalWrite(sortiePC2, HIGH);
            }
           if (strcasecmp(value,"PC2On")==0 ){
-              transmitHomeEasy(true,2); // 0 adress de la PC2
-              delay(10);
-              transmitHomeEasy(true,2); // 0 adress de la PC2
+              digitalWrite(sortiePC2, LOW);
           }
 
           if (strcasecmp(value,"ouvertureT") ==0){

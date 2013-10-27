@@ -138,6 +138,9 @@ byte relaisFermetureTympan=25;
 byte sortieEmetteurHomeEasy = 9;
 
 byte sortieLumiere = 29; //
+byte sortiePC1 = 30; //
+byte sortiePC2 = 31; //
+byte sortiePC3 = 32; //
 
 byte relaisOuvertureCover = 26;
 byte relaisFermetureCover = 27;
